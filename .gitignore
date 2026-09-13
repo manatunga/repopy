@@ -1,0 +1,22 @@
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python execution caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# OS metadata & IDEs
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Packaging and distribution builds
+build/
+dist/
+*.egg-info/
