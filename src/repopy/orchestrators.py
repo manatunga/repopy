@@ -93,7 +93,6 @@ class CloneInitializer:
                             print(f'Failed to install dependencies from requirements.txt at {git_engine.project_path}')
                             print('To install dependencies, run the following on your terminal:\n')
                             print(f'cd {git_engine.project_path}')
-                            print(f'cd {git_engine.project_path}')
                             if is_windows():
                                 print('.\\.venv\\Scripts\\Activate.ps1 (On Powershell)')
                                 print('.\\.venv\\Scripts\\activate.bat (On cmd)\n')
