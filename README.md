@@ -2,9 +2,9 @@
 
 A highly modular, cross-platform Python CLI scaffolding tool and library designed to automate the initial configuration of local Python developer workspaces and remote Python repository deployment.
 
-[![PyPI Version](https://shields.io)](https://pypi.org)
-[![Python Versions](https://shields.io)](https://pypi.org)
-[![License: MIT](https://shields.io)](https://opensource.org)
+![Static Badge](https://img.shields.io/badge/PyPI_version-0.1.1-orange)&nbsp;&nbsp;&nbsp;
+[![Python Versions](https://img.shields.io/pypi/pyversions/repopy.svg)](https://pypi.org)&nbsp;&nbsp;&nbsp;
+[![License: MIT](https://img.shields.io/pypi/l/repopy.svg)](https://pypi.org)
 
 ---
 
