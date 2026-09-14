@@ -10,4 +10,4 @@ def has_python() -> bool:
 
 
 def has_git() -> bool:
-    return shutil.which('git')
+    return bool(shutil.which('git'))
