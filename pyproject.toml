@@ -12,3 +12,6 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
+
+[project.scripts]
+repopy = "repopy.__main__:main"

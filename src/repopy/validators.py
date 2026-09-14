@@ -7,7 +7,6 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 def is_valid_project_name(name: str) -> bool:
-
     if not name or name.strip() == '':
         return False
 
@@ -23,7 +22,6 @@ def is_valid_project_name(name: str) -> bool:
 
 
 def is_valid_git_url(url: str) -> bool:
-
     if not url or not url.strip():
         return False
 
