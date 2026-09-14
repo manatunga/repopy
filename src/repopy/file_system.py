@@ -86,7 +86,7 @@ Thumbs_db'''
             return False
 
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         '''Removes any partially created project directories if a failure occurs'''
         if self.project_path.exists():
             try:
@@ -94,7 +94,7 @@ Thumbs_db'''
                 logger.info(f'Successfully cleaned up half-baked workspace at {self.project_path}')
             except OSError as e:
                 logger.error(f'Failed to clean up directory at {self.project_path}: {e}')
-                
+
 
     def build_workspace(self) -> bool:
         '''Orchestrate entire file-system creation sequence'''
