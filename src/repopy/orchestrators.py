@@ -26,27 +26,27 @@ class LocalInitializer:
                 if fs_engine.build_workspace():
                     print(f'Success! Your project directory has been created at {self.project_path}.')
                     print('Git has been initialized.\n.gitignore has been generated.')
-                    print('To activate your venv, enter the following on the terminal:\n\n')
-                    print(f'cd {self.project_path}')
+                    print('To activate your venv, enter the following on the terminal:\n')
+                    print(f'cd {self.project_path}\n')
                     if is_windows():
                         print('.\\.venv\\Scripts\\Activate.ps1 (On Powershell)')
                         print('.\\.venv\\Scripts\\activate.bat (On cmd)\n')
                         return True
                     else:
-                        print('source .venv/bin/activate')
+                        print('source .venv/bin/activate\n')
                         return True
 
                 else:
-                    print(f'Failed to create {self.project_path} directory. Cleaning up half-baked files...')
+                    print(f'\nFailed to create {self.project_path} directory. Cleaning up half-baked files...')
                     fs_engine.cleanup()
                     return False
 
             else:
-                print(f'"{self.project_name}" is not a valid directory name.')
+                print(f'"\n{self.project_name}" is not a valid directory name.')
                 return False
 
         else:
-            print('Python is not installed in the local machine.')
+            print('\nPython is not installed in the local machine.')
             return False
 
 
@@ -59,7 +59,7 @@ class CloneInitializer:
     def run(self) -> bool:
         '''Runs when `repopy clone` is called'''
         if has_python() and has_git():
-            if is_valid_git_url(self.repo_url):
+            if not is_valid_git_url(self.repo_url):
                 print('Invalid Git URL format')
                 return False
             
@@ -79,7 +79,7 @@ class CloneInitializer:
                             print(f'Success! GitHub repository has been cloned at {git_engine.project_path}.')
                             print(f'All dependancies have been installed from requirements.txt (if requirements.txt exists)')
                             print('To activate your venv, enter the following on the terminal:\n')
-                            print(f'cd {git_engine.project_path}')
+                            print(f'cd {git_engine.project_path}\n')
                             if is_windows():
                                 print('.\\.venv\\Scripts\\Activate.ps1 (On Powershell)')
                                 print('.\\.venv\\Scripts\\activate.bat (On cmd)\n')
@@ -92,17 +92,18 @@ class CloneInitializer:
                             print(f'GitHub repository has been clones at {git_engine.project_path}')
                             print(f'Failed to install dependencies from requirements.txt at {git_engine.project_path}')
                             print('To install dependencies, run the following on your terminal:\n')
-                            print(f'cd {git_engine.project_path}')
+                            print(f'cd {git_engine.project_path}\n')
                             if is_windows():
                                 print('.\\.venv\\Scripts\\Activate.ps1 (On Powershell)')
                                 print('.\\.venv\\Scripts\\activate.bat (On cmd)\n')
                             else:
                                 print('source .venv/bin/activate\n')
                             print('pip install -r requirements.txt\n')
-                            print('Or install them individually by `pip install <module>`')
+                            print('Or install them individually by `pip install <module>`\n')
                             answer = input('If not, would you like to cleanup the new directory? (Y/n): ')
 
                             if answer.strip().lower() in ['y', 'yes']:
+                                print('Cleaning up half-baked files...')
                                 git_engine.cleanup()
                                 return False
                             else:

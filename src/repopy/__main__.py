@@ -10,10 +10,12 @@ def main() -> None:
     args = parse_arguments()
 
     if args.command == 'local':
+        print('Working on it...')
         initializer = LocalInitializer(args.project_name)
         initializer.run()
 
     elif args.command == 'clone':
+        print('Working on it...')
         initializer = CloneInitializer(args.repo_url, args.name)
         initializer.run()
 
