@@ -15,7 +15,7 @@ class LocalInitializer:
 
     def __init__(self, project_name: str):
         self.project_name = project_name
-        self.project_path = Path(project_name)
+        self.project_path = Path(project_name).resolve()
 
 
     def run(self) -> bool:
