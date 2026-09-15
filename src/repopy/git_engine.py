@@ -61,4 +61,42 @@ class GitEngine:
                 logger.info(f'Successfully cleaned up half-baked workspace at {self.project_path}')
             except OSError as e:
                 logger.error(f'Failed to clean up directory at {self.project_path}: {e}')
-    
+
+
+class GitLinkEngine:
+
+    def __init__(self, repo_url: str, message: str):
+        self.repo_url = repo_url
+        self.message = message
+
+
+    def link_and_push(self) -> bool:
+        '''Runs the sequence of Git terminal execution blocks to link the repo'''
+        try:
+            stage_result = subprocess.run(['git', 'add', '.'], capture_output=True, text=True)
+            if stage_result.returncode != 0:
+                return False
+
+            commit_result = subprocess.run(['git', 'commit', '-m', self.message], capture_output=True, text=True)
+            if commit_result.returncode != 0:
+                if 'nothing to commit' not in commit_result.stdout:
+                    return False
+
+            branch_result = subprocess.run(['git', 'branch', '-M', 'main'], capture_output=True, text=True)
+            if branch_result.returncode != 0:
+                return False
+
+            remote_result = subprocess.run(['git', 'remote', 'add', 'origin', self.repo_url], capture_output=True, text=True)
+            if remote_result.returncode != 0:
+                return False
+
+            push_result = subprocess.run(['git', 'push', '-u', 'origin', 'main'], text=True)
+            if push_result.returncode != 0:
+                return False
+
+            return True
+
+        except OSError as e:
+            logger.error(f'Failed to execute Git linking operationsL {e}')
+            return False
+        

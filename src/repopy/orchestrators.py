@@ -6,16 +6,18 @@ tools and manages the entire user request loop from start to finish.
 from pathlib import Path
 
 from repopy.file_system import FileSystemEngine
-from repopy.git_engine import GitEngine
+from repopy.git_engine import GitEngine, GitLinkEngine
 from repopy.dependencies import has_python, has_git
 from repopy.validators import is_valid_project_name, is_valid_git_url
 from repopy.os_detector import is_windows
 
 class LocalInitializer:
 
-    def __init__(self, project_name: str):
-        self.project_name = project_name
-        self.project_path = Path(project_name).resolve()
+    def __init__(self, manifest: dict):
+        self.manifest = manifest
+        self.project_name = manifest['project_name']
+        self.project_path = Path(self.project_name).resolve()
+        self.theme = manifest['theme']
 
 
     def run(self) -> bool:
@@ -23,7 +25,7 @@ class LocalInitializer:
         if has_python():
             if is_valid_project_name(self.project_name):
                 fs_engine = FileSystemEngine(self.project_path)
-                if fs_engine.build_workspace():
+                if fs_engine.build_workspace(theme=self.theme, manifest=self.manifest):
                     print(f'Success! Your project directory has been created at {self.project_path}.')
                     print('Git has been initialized.\n.gitignore has been generated.')
                     print('To activate your venv, enter the following on the terminal:\n')
@@ -89,7 +91,7 @@ class CloneInitializer:
                                 return True
 
                         else:
-                            print(f'GitHub repository has been clones at {git_engine.project_path}')
+                            print(f'GitHub repository has been cloned at {git_engine.project_path}')
                             print(f'Failed to install dependencies from requirements.txt at {git_engine.project_path}')
                             print('To install dependencies, run the following on your terminal:\n')
                             print(f'cd {git_engine.project_path}\n')
@@ -123,4 +125,36 @@ class CloneInitializer:
 
         else:
             print(f'Failed to initiate repopy due to absence of Python or Git on local machine.')
-            return False    
+            return False   
+
+
+class LinkInitializer:
+
+    def __init__(self, repo_url: str, message: str | None):
+        self.repo_url = repo_url
+        self.message = message if message else 'Initial commit: Workspace structured by repopy'
+
+
+    def run(self) -> bool:
+        '''Runs when `repopy link` is called'''
+        if has_git():
+            if Path('.git').exists():
+                git_link_engine = GitLinkEngine(self.repo_url, self.message)
+                if git_link_engine.link_and_push():
+                    print(f'Success! Your local repository has been linked to {self.repo_url}.')
+                    print(f'Commit message: {self.message}')
+                    return True
+                else:
+                    print(f'Failed to push code to remote endpoint {self.repo_url}.')
+                    return False
+
+            else:
+                print('No local Git repository detected. Please run "repopy init" first.')
+                return False
+            
+        else:
+            print('Git is not installed on this machine.')
+            return False
+
+
+        
