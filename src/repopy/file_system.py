@@ -10,29 +10,11 @@ import logging
 import subprocess
 from pathlib import Path
 
+from repopy.templates import GITIGNORE_TEMPLATE, generate_pyproject_toml
+
 logger = logging.getLogger(__name__)
 
 class FileSystemEngine:
-
-    GITIGNORE_TEMPLATE = '''# Compiled Python files
-__pycache__/
-*.pyc
- 
-# Virtual environments
-# .venv/
-venv/
-env/
-ENV/
-
-# IDEs and Editors
-.vscode/
-.idea/
-*.swp
-*.swo
-    
-# OS files
-.DS_Store
-Thumbs_db'''
 
     def __init__(self, project_path: Path):
         self.project_path = project_path
@@ -49,17 +31,54 @@ Thumbs_db'''
             return False
 
 
-    def create_gitignore(self) -> bool:
-        '''Generates a .gitignore file with a basic python gitignore template'''
-        gitignore_file = self.project_path / '.gitignore'
+    def create_theme_directories(self, theme: str, project_name: str):
+        '''Maps and structures the child directory tree based on the project theme'''
+        if theme == 'web_api':
+            sub_dirs = ['src/app', 'src/app/routes', 'src/app/models']
+
+        elif theme == 'cli_package':
+            sub_dirs = [f'src/{project_name}', 'tests']
+
+        elif theme == 'data_science':
+            sub_dirs = ['data/raw', 'data/processed', 'notebooks', 'src/pipeline']
+
+        else:
+            return True
 
         try:
-            with open(gitignore_file, 'w') as f:
-                f.write(self.GITIGNORE_TEMPLATE)
-                return True
-            
+            for folder in sub_dirs:
+                target_folder_path = (self.project_path / folder).resolve()
+                target_folder_path.mkdir(parents=True, exist_ok=True)
+
+            return True
+
         except OSError as e:
-            logger.error(f'Failed to create gitignore file at {self.project_path}: {e}')
+            logger.error(f'Failed to build nested structures for theme {theme}: {e}')
+            return False
+
+
+    def write_theme_configurations(self, theme: str, manifest: dict) -> bool:
+        '''Deploys standard configuration templates (gitignore, requirements.txt or toml)'''
+        try:
+            gitignore_path = self.project_path / '.gitignore'
+            with open(gitignore_path, 'w') as f:
+                f.write(GITIGNORE_TEMPLATE)
+
+            if theme == 'minimal':
+                req_path = self.project_path / 'requirements.txt'
+                with open(req_path, 'w') as f:
+                    f.write('')
+
+            else:
+                toml_content = generate_pyproject_toml(manifest)
+                toml_path = self.project_path / 'pyproject.toml'
+                with open(toml_path, 'w') as f:
+                    f.write(toml_content)
+
+            return True
+
+        except OSError as e:
+            logger.error(f'Failed to deploy structural file sheets: {e}')
             return False
 
 
