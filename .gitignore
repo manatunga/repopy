@@ -6,6 +6,7 @@ ENV/
 
 # Python execution caches
 __pycache__/
+.pytest_cache
 *.pyc
 *.pyo
 *.pyd

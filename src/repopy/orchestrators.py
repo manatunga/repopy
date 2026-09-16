@@ -3,6 +3,7 @@ Orchestration Layer. Core supervisor that amalgamates all inspectors and buildin
 tools and manages the entire user request loop from start to finish.
 '''
 
+import logging
 from pathlib import Path
 
 from repopy.file_system import FileSystemEngine
@@ -10,6 +11,8 @@ from repopy.git_engine import GitEngine, GitLinkEngine
 from repopy.dependencies import has_python, has_git
 from repopy.validators import is_valid_project_name, is_valid_git_url
 from repopy.os_detector import is_windows
+
+logger = logging.getLogger(__name__)
 
 class LocalInitializer:
 
@@ -25,30 +28,30 @@ class LocalInitializer:
         if has_python():
             if is_valid_project_name(self.project_name):
                 fs_engine = FileSystemEngine(self.project_path)
-                if fs_engine.build_workspace(theme=self.theme, manifest=self.manifest):
-                    print(f'Success! Your project directory has been created at {self.project_path}.')
-                    print('Git has been initialized.\n.gitignore has been generated.')
-                    print('To activate your venv, enter the following on the terminal:\n')
-                    print(f'cd {self.project_path}\n')
+                if fs_engine.build_workspace(self.theme, self.manifest):
+                    print(f'✅ Success! Workspace provisioned inside: {self.project_path}')
+                    print(f'Layout theme configured: [{self.theme.upper()}]')
+                    print('To activate your environment, enter the following commands:\n')
+                    print(f'    cd {self.project_path}\n')
                     if is_windows():
-                        print('.\\.venv\\Scripts\\Activate.ps1 (On Powershell)')
-                        print('.\\.venv\\Scripts\\activate.bat (On cmd)\n')
-                        return True
+                        print('    .\\.venv\\Scripts\\Activate.ps1 (On Powershell)')
+                        print('    .\\.venv\\Scripts\\activate.bat (On cmd)\n')
                     else:
-                        print('source .venv/bin/activate\n')
-                        return True
+                        print('    source .venv/bin/activate\n')
+
+                    return True
 
                 else:
-                    print(f'\nFailed to create {self.project_path} directory. Cleaning up half-baked files...')
+                    print(f'❌ Construction failed. Triggering auto-rollback transaction for {self.project_path}...')
                     fs_engine.cleanup()
                     return False
 
             else:
-                print(f'"\n{self.project_name}" is not a valid directory name.')
+                print(f'"{self.project_name}" is not a valid directory name.')
                 return False
 
         else:
-            print('\nPython is not installed in the local machine.')
+            print('Python is not installed in the local machine.')
             return False
 
 
@@ -78,29 +81,29 @@ class CloneInitializer:
                 if git_engine.clone_repository():
                     if fs_engine.create_virtual_environment():
                         if git_engine.install_dependencies():
-                            print(f'Success! GitHub repository has been cloned at {git_engine.project_path}.')
+                            print(f'✅ Success! GitHub repository has been cloned at {git_engine.project_path}.')
                             print(f'All dependancies have been installed from requirements.txt (if requirements.txt exists)')
                             print('To activate your venv, enter the following on the terminal:\n')
-                            print(f'cd {git_engine.project_path}\n')
+                            print(f'    cd {git_engine.project_path}\n')
                             if is_windows():
-                                print('.\\.venv\\Scripts\\Activate.ps1 (On Powershell)')
-                                print('.\\.venv\\Scripts\\activate.bat (On cmd)\n')
+                                print('    .\\.venv\\Scripts\\Activate.ps1 (On Powershell)')
+                                print('    .\\.venv\\Scripts\\activate.bat (On cmd)\n')
                                 return True
                             else:
-                                print('source .venv/bin/activate\n')
+                                print('    source .venv/bin/activate\n')
                                 return True
 
                         else:
                             print(f'GitHub repository has been cloned at {git_engine.project_path}')
                             print(f'Failed to install dependencies from requirements.txt at {git_engine.project_path}')
                             print('To install dependencies, run the following on your terminal:\n')
-                            print(f'cd {git_engine.project_path}\n')
+                            print(f'    cd {git_engine.project_path}\n')
                             if is_windows():
-                                print('.\\.venv\\Scripts\\Activate.ps1 (On Powershell)')
-                                print('.\\.venv\\Scripts\\activate.bat (On cmd)\n')
+                                print('    .\\.venv\\Scripts\\Activate.ps1 (On Powershell)')
+                                print('    .\\.venv\\Scripts\\activate.bat (On cmd)\n')
                             else:
-                                print('source .venv/bin/activate\n')
-                            print('pip install -r requirements.txt\n')
+                                print('    source .venv/bin/activate\n')
+                            print('    pip install -r requirements.txt\n')
                             print('Or install them individually by `pip install <module>`\n')
                             answer = input('If not, would you like to cleanup the new directory? (Y/n): ')
 
@@ -141,20 +144,17 @@ class LinkInitializer:
             if Path('.git').exists():
                 git_link_engine = GitLinkEngine(self.repo_url, self.message)
                 if git_link_engine.link_and_push():
-                    print(f'Success! Your local repository has been linked to {self.repo_url}.')
-                    print(f'Commit message: {self.message}')
+                    print(f'✅ Success! Your local repository has been linked to {self.repo_url}.')
+                    print(f'Commit message baseline: "{self.message}"')
                     return True
                 else:
-                    print(f'Failed to push code to remote endpoint {self.repo_url}.')
+                    print(f'❌ Failed to establish communication or push to remote repository at {self.repo_url}.')
                     return False
 
             else:
-                print('No local Git repository detected. Please run "repopy init" first.')
+                print('No local Git repository detected. Please initialize this project first.')
                 return False
             
         else:
             print('Git is not installed on this machine.')
             return False
-
-
-        

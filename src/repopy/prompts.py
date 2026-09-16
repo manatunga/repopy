@@ -80,7 +80,7 @@ def capture_project_manifests(cli_args) -> dict:
                 else:
                     print('Invalid choice, please try again.')
 
-    if not theme == 'minimal':
+    if not theme == 'minimal' and not cli_args.skip:
         version_input = input('Enter project version (default: 1.0.0): ').strip()
         while True:
             if re.search(r'[^0-9.]', version_input) and not version_input == '':
