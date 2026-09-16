@@ -115,13 +115,14 @@ class FileSystemEngine:
                 logger.error(f'Failed to clean up directory at {self.project_path}: {e}')
 
 
-    def build_workspace(self) -> bool:
+    def build_workspace(self, theme: str, manifest: dict) -> bool:
         '''Orchestrate entire file-system creation sequence'''
 
         if self.create_root_directory():
             if self.initialize_git():
-                if self.create_gitignore():
-                    if self.create_virtual_environment():
-                        return True
+                if self.create_theme_directories(theme, manifest['project_name']):
+                    if self.write_theme_configurations(theme, manifest):
+                        if self.create_virtual_environment():
+                            return True
 
         return False
