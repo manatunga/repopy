@@ -25,7 +25,7 @@ def main() -> None:
         elif args.command == 'clone':
             print('⌛ Working on it...\n')
             initializer = CloneInitializer(
-                args.repo_url, args.name, args.install, args.download_only
+                args.repo_url, args.name, args.install, args.no_install
                 )
             initializer.run()
 

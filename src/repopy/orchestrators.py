@@ -11,7 +11,6 @@ from repopy.git_engine import GitEngine, GitLinkEngine
 from repopy.dependencies import has_python, has_git
 from repopy.prompts import confirm_dependency_installation, confirm_cleanup
 from repopy.validators import is_valid_project_name, is_valid_git_url
-from repopy.os_detector import is_windows
 
 logger = logging.getLogger(__name__)
 
@@ -49,11 +48,11 @@ class LocalInitializer:
 
 class CloneInitializer:
 
-    def __init__(self, repo_url: str, dir_name: str | None, install: bool, download_only: bool):
+    def __init__(self, repo_url: str, dir_name: str | None, install: bool, no_install: bool):
         self.repo_url = repo_url
         self.dir_name = dir_name if dir_name else None
         self.auto_install = bool(install)
-        self.download_only = bool(download_only)
+        self.no_install = bool(no_install)
 
     def run(self) -> bool:
         '''Runs when `repopy clone` is called'''
@@ -93,7 +92,7 @@ class CloneInitializer:
             print('No dependencies to install in repository (or requirements.txt is absent).')
             should_install = False
 
-        elif self.download_only:
+        elif self.no_install:
             print('Skipping installation of dependencies.')
             should_install = False
 
