@@ -9,7 +9,7 @@ __pycache__/
 *.pyc
  
 # Virtual environments
-# .venv/
+.venv/
 venv/
 env/
 ENV/
@@ -32,16 +32,16 @@ def generate_pyproject_toml(manifest: dict) -> str:
     '''
 
     return f'''[build system]
-    requires = ["setuptools>=61.0.0"]
-    build-backend = "setuptools.build_meta"
-    
-    [project]
-    name = "{manifest['project_name']}"
-    version = "{manifest['version']}"
-    description = "{manifest['description']}"
-    authors = [
-        {{ name = "{manifest['author']}" }}
-    ]
-    requires-python = ">=3.8"
-    dependencies = []
-    '''
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "{manifest['project_name']}"
+version = "{manifest['version']}"
+description = "{manifest['description']}"
+authors = [
+    {{ name = "{manifest['author']}" }}
+]
+requires-python = ">=3.8"
+dependencies = []
+'''
