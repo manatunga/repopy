@@ -26,5 +26,7 @@ jobs:
                 pip install pytest
             
             - name: Execute Validation Test Framework
+              env:
+                PYTHONPATH: src
               run: |
                 pytest
