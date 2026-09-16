@@ -106,4 +106,17 @@ def capture_project_manifests(cli_args) -> dict:
     }
 
 
+def confirm_dependency_installation(dependencies: list[str]) -> bool:
+    print('\nThis repository contains the following dependencies:')
+    for dep in dependencies:
+        print(f'    • {dep}')
+    
+    print()
 
+    try:
+        choice = input('Do you want to install these dependencies? [y/N]: ').strip().lower()
+        return choice in ('y', 'yes')
+
+    except (KeyboardInterrupt, EOFError):
+        print('\nSkipping installation.')
+        return False
