@@ -76,6 +76,22 @@ def parse_arguments() -> argparse.Namespace:
         help='Name of the project folder'
     )
 
+    # Mutually exclusive commands regarding installing dependencies: 
+    # install flag (-i / --install) for installing dependencies, bypassing prompt
+    # download-only flag (-d / --download-only) for only fetching dependencies without installing, bypassing prompt
+    deps_group = clone_parser.add_mutually_exclusive_group()
+    deps_group.add_argument(
+        '-i', '--install',
+        action='store_true',
+        help='Automatically install dependencies without confirmation'
+    )
+
+    deps_group.add_argument(
+        '-d', '--download-only',
+        action='store_true',
+        help='Skip dependency installation completeley (fetch-only safe mode)'
+    )
+
     #---------------------------------------------------------------------------------
     # `repopy link` subcommand
     #---------------------------------------------------------------------------------
