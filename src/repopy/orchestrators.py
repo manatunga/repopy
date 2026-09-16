@@ -87,7 +87,7 @@ class CloneInitializer:
 
         if not fs_engine.create_virtual_environment():
             print(f'Failed to create {git_engine.project_path} directory. Cleaning up half-baked files...')
-            git_engine.cleanup()
+            fs_engine.cleanup()
             return False
 
         if git_engine.install_dependencies():
@@ -119,7 +119,7 @@ class CloneInitializer:
 
             if answer.strip().lower() in ['y', 'yes']:
                 print('Cleaning up half-baked files...')
-                git_engine.cleanup()
+                fs_engine.cleanup()
                 return False
             else:
                 return True

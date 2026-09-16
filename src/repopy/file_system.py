@@ -10,6 +10,7 @@ import logging
 import subprocess
 from pathlib import Path
 
+from repopy.os_detector import is_windows
 from repopy.templates import GITIGNORE_TEMPLATE, generate_pyproject_toml
 
 logger = logging.getLogger(__name__)
@@ -102,6 +103,42 @@ class FileSystemEngine:
             return result.returncode == 0
         except OSError as e:
             logger.error(f'Unable to initialize git at {self.project_path}: {e}')
+            return False
+
+
+    def read_requirements(req_path: Path) -> list[str]:
+        '''Read repository dependencies if requirements.txt exists and displays them'''
+        if not req_path.is_file():
+            return []
+        
+        with open(req_path, 'r') as f:
+            lines = [
+                cleaned_line
+                for line in f
+                if (cleaned_line := line.strip()) and not cleaned_line.startswith('#')
+            ]
+
+        return lines
+    
+
+    def install_dependencies(self) -> bool:
+        '''Install repository dependencies if requirements.txt is present'''
+        req_file = self.project_path / 'requirements.txt'
+
+        if not req_file.exists():
+            return True
+
+        if is_windows():
+            pip_path = self.project_path / '.venv' / 'Scripts' / 'pip.exe'
+        else:
+            pip_path = self.project_path / '.venv' / 'bin' / 'pip'
+
+        try:
+            result = subprocess.run([str(pip_path), 'install', '-r', str(req_file)], capture_output=True, text=True)
+            return result.returncode == 0
+        
+        except OSError as e:
+            logger.error(f'Failed to install dependencies at {self.project_path}: {e}')
             return False
 
 
