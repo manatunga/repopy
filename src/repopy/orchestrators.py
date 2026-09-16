@@ -56,7 +56,7 @@ class CloneInitializer:
 
     def run(self) -> bool:
         '''Runs when `repopy clone` is called'''
-        if not has_python() and not has_git():        
+        if not has_python() or not has_git():        
             print(f'❌ Failed to initiate repopy due to absence of Python or Git on local machine.')
             return False   
 

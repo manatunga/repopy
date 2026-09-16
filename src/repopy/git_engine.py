@@ -4,7 +4,6 @@ holds the methods required to cone a GitHub repository and install
 dependencies.
 '''
 
-import shutil
 import logging
 import subprocess
 from pathlib import Path
@@ -25,7 +24,7 @@ class GitEngine:
     def clone_repository(self) -> bool:
         '''Clone GitHub repository using the given url to the given directory name'''
         try:
-            result = subprocess.run(['git', 'clone', self.repo_url, str(self.project_path)], capture_output=True, text=True)
+            result = subprocess.run(['git', 'clone', self.repo_url, str(self.project_path)], text=True)
             return result.returncode == 0
         except OSError as e:
             logger.error(f'Failed to clone repository at {self.project_path}: {e}')
@@ -66,6 +65,6 @@ class GitLinkEngine:
             return True
 
         except OSError as e:
-            logger.error(f'Failed to execute Git linking operationsL {e}')
+            logger.error(f'Failed to execute Git linking operations: {e}')
             return False
         

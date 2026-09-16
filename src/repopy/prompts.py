@@ -5,7 +5,7 @@ loops, and fallback default configurations.
 
 import re
 from pathlib import Path
-from repopy.orchestrators import is_valid_project_name
+from repopy.validators import is_valid_project_name
 
 THEME_OPTIONS = {
     '1': 'minimal',
@@ -124,7 +124,7 @@ def confirm_dependency_installation(dependencies: list[str]) -> bool:
 
 def confirm_cleanup() -> bool:
     try:
-        answer = input('If not, would you like to cleanup the new directory? (Y/n): ').strip().lower()
+        answer = input('If not, would you like to cleanup the new directory? [y/N]: ').strip().lower()
         return answer in ('y', 'yes')
 
     except (KeyboardInterrupt, EOFError):
