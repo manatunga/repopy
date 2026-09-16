@@ -6,6 +6,7 @@ cryptography==50.0.1
 docutils==0.23
 id==1.6.1
 idna==3.19
+iniconfig==2.3.0
 jaraco.classes==3.4.0
 jaraco.context==6.1.2
 jaraco.functools==4.6.0
@@ -16,11 +17,13 @@ mdurl==0.1.2
 more-itertools==11.1.0
 nh3==0.3.7
 packaging==26.3
+pluggy==1.6.0
 pycparser==3.0
 Pygments==2.21.0
 pyproject_hooks==1.2.0
+pytest==9.1.1
 readme_renderer==46.0
--e git+https://github.com/manatunga/repopy.git@201563fdadfd642d2f8063041557e5b930075cad#egg=repopy
+-e git+https://github.com/manatunga/repopy.git@0ac7420f30430633f951697d1b3524925f2f8471#egg=repopy
 requests==2.34.2
 requests-toolbelt==1.0.0
 rfc3986==2.0.0
