@@ -12,32 +12,34 @@ def main() -> None:
         args = parse_arguments()
 
         if args.command == 'init':
-            print('Working on it...\n')
+            print('⌛ Working on it...\n')
             manifest = capture_project_manifests(args)
             initializer = LocalInitializer(manifest)
             success = initializer.run()
 
             if success and args.link:
-                print('Initiating automated repository link shortcut...')
+                print('⌛ Initiating automated repository link shortcut...')
                 link_initializer = LinkInitializer(args.link, args.message)
                 link_initializer.run()
 
         elif args.command == 'clone':
-            print('Working on it...\n')
-            initializer = CloneInitializer(args.repo_url, args.name)
+            print('⌛ Working on it...\n')
+            initializer = CloneInitializer(
+                args.repo_url, args.name, args.install, args.download_only
+                )
             initializer.run()
 
         elif args.command == 'link':
-            print('Working on it...\n')
+            print('⌛ Working on it...\n')
             initializer = LinkInitializer(args.repo_url, args.message)
             initializer.run()
 
         else:
-            print('Usage: repopy [local | clone] --help')
-            print('Error: Please specify a subcommand')
+            print('Usage: repopy [init | clone | link] --help')
+            print('⚠️ Error: Please specify a subcommand')
 
     except KeyboardInterrupt:
-        print('\n Workspace operation cancelled by user.')
+        print('\n ✖️ Workspace operation cancelled by user.')
         sys.exit(1)
 
 

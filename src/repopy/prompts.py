@@ -120,3 +120,12 @@ def confirm_dependency_installation(dependencies: list[str]) -> bool:
     except (KeyboardInterrupt, EOFError):
         print('\nSkipping installation.')
         return False
+
+
+def confirm_cleanup() -> bool:
+    try:
+        answer = input('If not, would you like to cleanup the new directory? (Y/n): ').strip().lower()
+        return answer in ('y', 'yes')
+
+    except (KeyboardInterrupt, EOFError):
+        return False

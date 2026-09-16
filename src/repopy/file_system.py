@@ -106,8 +106,9 @@ class FileSystemEngine:
             return False
 
 
-    def read_requirements(req_path: Path) -> list[str]:
+    def read_requirements(self) -> list[str]:
         '''Read repository dependencies if requirements.txt exists and displays them'''
+        req_path = self.project_path / 'requirements.txt'
         if not req_path.is_file():
             return []
         
@@ -140,6 +141,26 @@ class FileSystemEngine:
         except OSError as e:
             logger.error(f'Failed to install dependencies at {self.project_path}: {e}')
             return False
+
+
+    def get_activation_guide(self) -> str:
+        if is_windows():
+            venv_activation = '''
+    .\\.venv\\Scripts\\Activate.ps1 (if on Powershell)
+    .\\.venv\\Scripts\\activate.bat (if on cmd)\n
+'''
+        else:
+            venv_activation = '''
+    source .venv/bin/activate\n
+'''
+        
+        return f'''
+To activate the virtual environment and get started, enter the following:
+
+    cd {self.project_path}
+
+{venv_activation}
+'''
 
 
     def cleanup(self) -> None:

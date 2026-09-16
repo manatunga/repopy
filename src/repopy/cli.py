@@ -89,7 +89,7 @@ def parse_arguments() -> argparse.Namespace:
     deps_group.add_argument(
         '-d', '--download-only',
         action='store_true',
-        help='Skip dependency installation completeley (fetch-only safe mode)'
+        help='Skip dependency installation completely (fetch-only safe mode)'
     )
 
     #---------------------------------------------------------------------------------
