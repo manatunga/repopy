@@ -142,11 +142,16 @@ repopy/
 │       ├── templates.py         # Static asset definitions & manifests
 │       └── validators.py        # Input sanitation & regex filters
 ├── tests/
+│   ├── test_cli.py              # CLI argument parser & flag exclusivity tests
+│   ├── test_file_system.py      # Workspace scaffolding & requirements parsing tests
+│   ├── test_git_engine.py       # Subprocess Git mocking & exit code tests
+│   ├── test_orchestrators.py    # Pipeline logic, prompts, and rollback tests
 │   ├── test_prompts.py          # Input loop & default manifest tests
 │   └── test_validators.py       # Path and schema validation tests
 ├── pyproject.toml               # PEP 621 packaging configuration
 ├── LICENSE                      # MIT License
 └── README.md
+
 ```
 
 ---
