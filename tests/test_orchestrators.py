@@ -3,11 +3,11 @@ Automated test suite for repopy's orchestration layer.
 '''
 
 from pathlib import Path
-from repopy.orchestrators import LocalInitializer, CloneInitializer, LinkInitializer
-from repopy.git_engine import GitEngine, GitLinkEngine
-from repopy.file_system import FileSystemEngine
-import repopy.orchestrators as orch
 
+import repopy.orchestrators as orch
+from repopy.file_system import FileSystemEngine
+from repopy.git_engine import GitEngine, GitLinkEngine
+from repopy.orchestrators import CloneInitializer, LinkInitializer, LocalInitializer
 
 #-------------------------------------------------------------------------------------
 # LocalInitializer Tests

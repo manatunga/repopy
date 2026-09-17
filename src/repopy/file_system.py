@@ -4,10 +4,10 @@ that holds the methods required to manipulate directories, create virtural
 environments and create .gitignore and README.md templates.
 '''
 
-import venv
-import shutil
 import logging
+import shutil
 import subprocess
+import venv
 from pathlib import Path
 
 from repopy.os_detector import is_windows

@@ -3,9 +3,11 @@ Automated test suite for repopy's main entrypoint.
 '''
 
 import sys
+
 import pytest
 
 from repopy.__main__ import main
+
 
 def test_main_init_dispatch(monkeypatch):
     monkeypatch.setattr(sys, 'argv', ['repopy', 'init', 'my-app'])

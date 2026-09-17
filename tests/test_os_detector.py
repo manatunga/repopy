@@ -4,7 +4,8 @@ Automated test suite for repopy's OS detection layer.
 
 import platform
 
-from repopy.os_detector import get_os, is_windows, is_mac, is_linux
+from repopy.os_detector import get_os, is_linux, is_mac, is_windows
+
 
 def test_get_os_windows(monkeypatch):
     monkeypatch.setattr(platform, 'system', lambda: 'Windows')

@@ -5,6 +5,7 @@ expected dependencies (such as python and git) are installed.
 
 import shutil
 
+
 def has_python() -> bool:
     return bool(shutil.which('python') or shutil.which('python3'))
 

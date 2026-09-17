@@ -4,11 +4,13 @@ mapping layers.
 '''
 
 from pathlib import Path
+
 import pytest
+
 from repopy.prompts import (
     capture_project_manifests,
-    confirm_dependency_installation,
     confirm_cleanup,
+    confirm_dependency_installation,
     resolve_unique_project_name,
 )
 

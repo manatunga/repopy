@@ -6,6 +6,7 @@ for both `repopy local` and `repopy clone`.
 from pathlib import Path
 from urllib.parse import urlsplit
 
+
 def is_valid_project_name(name: str) -> bool:
     if not name or name.strip() == '':
         return False

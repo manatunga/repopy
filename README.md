@@ -3,10 +3,11 @@
 A modular, cross-platform Python CLI workspace manager and developer tooling suite designed to automate reproducible local scaffolding, virtual environment creation, and remote repository synchronization.
 
 ![PyPI - Version](https://img.shields.io/pypi/v/repopy?color=orange)&nbsp;&nbsp;&nbsp;
-[![Python Versions](https://img.shields.io/pypi/pyversions/repopy.svg)](https://pypi.org)&nbsp;&nbsp;&nbsp;
+[![License: MIT](https://img.shields.io/pypi/l/repopy.svg)](https://opensource.org/license/mit)&nbsp;&nbsp;&nbsp;
+[![Python Versions](https://img.shields.io/pypi/pyversions/repopy.svg)](https://pypi.org)
+
 [![CI](https://github.com/manatunga/repopy/actions/workflows/tests.yml/badge.svg)](https://github.com/manatunga/repopy/actions/workflows/tests.yml)&nbsp;&nbsp;&nbsp;
 [![codecov](https://codecov.io/github/manatunga/repopy/graph/badge.svg?token=2JRECANC1G)](https://codecov.io/github/manatunga/repopy)&nbsp;&nbsp;&nbsp;
-[![License: MIT](https://img.shields.io/pypi/l/repopy.svg)](https://opensource.org/license/mit)
 
 ---
 

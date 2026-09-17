@@ -4,7 +4,8 @@ Automated test suite for repopy's dependency detection layer.
 
 import shutil
 
-from repopy.dependencies import has_python, has_git
+from repopy.dependencies import has_git, has_python
+
 
 def test_has_python_found(monkeypatch):
     monkeypatch.setattr(shutil, 'which', lambda cmd: '/usr/bin/python3')

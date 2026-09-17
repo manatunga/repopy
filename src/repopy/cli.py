@@ -5,6 +5,7 @@ to identify user intent and any extra information passed.
 
 import argparse
 
+
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description='repopy: A modular project scaffolder and workflow manager for Python.'

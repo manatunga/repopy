@@ -6,11 +6,11 @@ tools and manages the entire user request loop from start to finish.
 import logging
 from pathlib import Path
 
+from repopy.dependencies import has_git, has_python
 from repopy.file_system import FileSystemEngine
 from repopy.git_engine import GitEngine, GitLinkEngine
-from repopy.dependencies import has_python, has_git
-from repopy.prompts import confirm_dependency_installation, confirm_cleanup
-from repopy.validators import is_valid_project_name, is_valid_git_url
+from repopy.prompts import confirm_cleanup, confirm_dependency_installation
+from repopy.validators import is_valid_git_url, is_valid_project_name
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class LocalInitializer:
             return True
 
         else:
-            print(f'❌ Construction failed. Triggering cleanup on half-baked directories...')
+            print('❌ Construction failed. Triggering cleanup on half-baked directories...')
             fs_engine.cleanup()
             return False
 
@@ -57,7 +57,7 @@ class CloneInitializer:
     def run(self) -> bool:
         '''Runs when `repopy clone` is called'''
         if not has_python() or not has_git():        
-            print(f'❌ Failed to initiate repopy due to absence of Python or Git on local machine.')
+            print('❌ Failed to initiate repopy due to absence of Python or Git on local machine.')
             return False   
 
         if not is_valid_git_url(self.repo_url):

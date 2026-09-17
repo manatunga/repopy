@@ -5,6 +5,7 @@ find the local machine's underlying operating system.
 
 import platform
 
+
 def get_os() -> str:
     system = platform.system()
 

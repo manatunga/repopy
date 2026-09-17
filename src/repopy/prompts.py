@@ -5,6 +5,7 @@ loops, and fallback default configurations.
 
 import re
 from pathlib import Path
+
 from repopy.validators import is_valid_project_name
 
 THEME_OPTIONS = {

@@ -3,9 +3,11 @@ Automated test suite for repopy cli parser.
 '''
 
 import sys
+
 import pytest
 
 from repopy.cli import parse_arguments
+
 
 def test_clone_defaults(monkeypatch):
     monkeypatch.setattr(sys, 'argv', ['repopy', 'clone', 'https://github.com/user/repo.git'])
