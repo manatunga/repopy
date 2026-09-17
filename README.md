@@ -144,15 +144,18 @@ repopy/
 │       └── validators.py        # Input sanitation & regex filters
 ├── tests/
 │   ├── test_cli.py              # CLI argument parser & flag exclusivity tests
+│   ├── test_dependencies.py     # Binary detection & absence verification tests
 │   ├── test_file_system.py      # Workspace scaffolding & requirements parsing tests
 │   ├── test_git_engine.py       # Subprocess Git mocking & exit code tests
+│   ├── test_main.py             # CLI dispatching & interrupt lifecycle tests
 │   ├── test_orchestrators.py    # Pipeline logic, prompts, and rollback tests
+│   ├── test_os_detector.py      # Cross-platform path resolution tests
 │   ├── test_prompts.py          # Input loop & default manifest tests
+│   ├── test_templates.py        # PEP 621 generator & asset template tests
 │   └── test_validators.py       # Path and schema validation tests
 ├── pyproject.toml               # PEP 621 packaging configuration
 ├── LICENSE                      # MIT License
 └── README.md
-
 ```
 
 ---
