@@ -144,6 +144,7 @@ repopy/
 │       ├── templates.py         # Static asset definitions & manifests
 │       └── validators.py        # Input sanitation & regex filters
 ├── tests/
+|   ├── __init__.py
 │   ├── test_cli.py              # CLI argument parser & flag exclusivity tests
 │   ├── test_dependencies.py     # Binary detection & absence verification tests
 │   ├── test_file_system.py      # Workspace scaffolding & requirements parsing tests
