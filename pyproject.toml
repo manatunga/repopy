@@ -35,3 +35,9 @@ Repository = "https://github.com/manatunga/repopy"
 
 [project.scripts]
 repopy = "repopy.__main__:main"
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+]

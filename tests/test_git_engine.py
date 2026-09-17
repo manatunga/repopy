@@ -104,3 +104,47 @@ def test_git_link_handles_os_error(monkeypatch):
 
     engine = GitLinkEngine('https://github.com/user/repo.git', 'feat: initial commit')
     assert engine.link_and_push() is False
+
+
+def test_git_link_stage_failure(monkeypatch):
+    def fake_run(cmd, *args, **kwargs):
+        if cmd[1] == 'add':
+            return subprocess.CompletedProcess(args=cmd, returncode=1, stderr='stage error')
+        return subprocess.CompletedProcess(args=cmd, returncode=0)
+
+    monkeypatch.setattr(subprocess, 'run', fake_run)
+    engine = GitLinkEngine('https://github.com/user/repo.git', 'init')
+    assert engine.link_and_push() is False
+
+
+def test_git_link_commit_real_failure(monkeypatch):
+    def fake_run(cmd, *args, **kwargs):
+        if cmd[1] == 'commit':
+            return subprocess.CompletedProcess(args=cmd, returncode=1, stdout='author identity unknown')
+        return subprocess.CompletedProcess(args=cmd, returncode=0)
+
+    monkeypatch.setattr(subprocess, 'run', fake_run)
+    engine = GitLinkEngine('https://github.com/user/repo.git', 'init')
+    assert engine.link_and_push() is False
+
+
+def test_git_link_branch_failure(monkeypatch):
+    def fake_run(cmd, *args, **kwargs):
+        if cmd[1] == 'branch':
+            return subprocess.CompletedProcess(args=cmd, returncode=1, stderr='branch error')
+        return subprocess.CompletedProcess(args=cmd, returncode=0)
+
+    monkeypatch.setattr(subprocess, 'run', fake_run)
+    engine = GitLinkEngine('https://github.com/user/repo.git', 'init')
+    assert engine.link_and_push() is False
+
+
+def test_git_link_push_failure(monkeypatch):
+    def fake_run(cmd, *args, **kwargs):
+        if cmd[1] == 'push':
+            return subprocess.CompletedProcess(args=cmd, returncode=1, stderr='remote rejected')
+        return subprocess.CompletedProcess(args=cmd, returncode=0)
+
+    monkeypatch.setattr(subprocess, 'run', fake_run)
+    engine = GitLinkEngine('https://github.com/user/repo.git', 'init')
+    assert engine.link_and_push() is False
