@@ -2,12 +2,24 @@
 Automated test suite for repopy templates and layouts.
 '''
 
-from repopy.templates import GITIGNORE_TEMPLATE, generate_pyproject_toml
+from repopy.templates import GITIGNORE_TEMPLATE, generate_pyproject_toml, generate_readme
 
 
 def test_gitignore_template_content():
     assert '__pycache__/' in GITIGNORE_TEMPLATE
     assert '.venv/' in GITIGNORE_TEMPLATE
+
+
+def test_generate_readme_output():
+    manifest = {
+        'project_name': 'sample_project',
+        'description': 'A sample CLI tool'
+    }
+
+    readme_output = generate_readme(manifest)
+
+    assert '# sample_project' in readme_output
+    assert 'A sample CLI tool' in readme_output
 
 
 def test_generate_pyproject_toml_output():

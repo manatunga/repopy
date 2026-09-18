@@ -103,6 +103,7 @@ def test_write_theme_configurations_minimal(tmp_path):
     manifest = {'project_name': 'test_min', 'author': 'tester'}
     assert fs_engine.write_theme_configurations('minimal', manifest) is True
     assert (tmp_path / '.gitignore').is_file()
+    assert (tmp_path / 'README.md').is_file()
     assert (tmp_path / 'requirements.txt').is_file()
     assert (tmp_path / 'requirements.txt').read_text() == ''
 

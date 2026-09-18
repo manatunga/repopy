@@ -45,3 +45,14 @@ authors = [
 requires-python = ">=3.8"
 dependencies = []
 '''
+
+def generate_readme(manifest: dict) -> str:
+    '''
+    Formats a simple markdown string using provided manifest 
+    attributes to generate a basic README.md
+    '''
+
+    return f'''# {manifest['project_name']}
+
+{manifest.get('description', 'A Python project generated with repopy.')}
+'''

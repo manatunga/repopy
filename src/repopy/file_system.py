@@ -11,7 +11,7 @@ import venv
 from pathlib import Path
 
 from repopy.os_detector import is_windows
-from repopy.templates import GITIGNORE_TEMPLATE, generate_pyproject_toml
+from repopy.templates import GITIGNORE_TEMPLATE, generate_pyproject_toml, generate_readme
 
 logger = logging.getLogger(__name__)
 
@@ -64,6 +64,11 @@ class FileSystemEngine:
             gitignore_path = self.project_path / '.gitignore'
             with open(gitignore_path, 'w') as f:
                 f.write(GITIGNORE_TEMPLATE)
+
+            readme_content = generate_readme(manifest)
+            readme_path = self.project_path / 'README.md'
+            with open(readme_path, 'w') as f:
+                f.write(readme_content)
 
             if theme == 'minimal':
                 req_path = self.project_path / 'requirements.txt'
