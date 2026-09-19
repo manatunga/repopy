@@ -1,11 +1,12 @@
 """
-Core Engine for the `repopy local` command. Houses the FileSystemEngine class
+Core Engine for pure local repopy commands. Houses the FileSystemEngine class
 that holds the methods required to manipulate directories, create virtural
 environments and create .gitignore and README.md templates.
 """
 
 from __future__ import annotations
 
+import os
 import logging
 import shutil
 import subprocess
@@ -188,6 +189,7 @@ To activate the virtual environment and get started, enter the following:
             except OSError:
                 logger.error(f"❌ Failed to clean up directory at {self.project_path}")
 
+
     def build_workspace(self, theme: str, manifest: dict) -> bool:
         """Orchestrate entire file-system creation sequence"""
 
@@ -198,3 +200,72 @@ To activate the virtual environment and get started, enter the following:
             and self.write_theme_configurations(theme, manifest)
             and self.create_virtual_environment()
         )
+
+
+    def find_cleanable_artifacts(self) -> list[Path]:
+        """Discovers directories and files that are safely cleanable"""
+        artifacts: list[Path] = []
+
+        target_file_extensions = (".coverage", ".pyc", ".pyo",)
+        excluded_dirs = {".git", ".venv", "venv"}
+
+        def is_target_dir(name: str) -> bool:
+            lowered = name.lower()
+            return (
+                lowered in {
+                    "__pycache__", 
+                    ".pytest_cache", 
+                    "build", 
+                    "dist", 
+                    ".ruff_cache", 
+                    ".mypy_cahce"
+                }
+                or lowered.endswith(".egg-info")
+            )
+
+        for root, dirs, files in os.walk(self.project_path):
+            root_path = Path(root)
+            
+            matched_dirs = [d for d in dirs if is_target_dir(d)]
+            for d in matched_dirs:
+                artifacts.append(root_path / d)
+
+            dirs[:] = [
+                d for d in dirs
+                if d not in excluded_dirs and d not in matched_dirs
+            ]
+
+            for file in files:
+                if file.endswith(target_file_extensions) or file == ".coverage":
+                    artifacts.append(root_path / file)
+
+        return artifacts
+
+
+    def clean_artifacts(self, paths: list[Path] | None = None) -> bool:
+        """Cleans discovered directories and files that can be safely removed."""
+        if paths is None:
+            paths = self.find_cleanable_artifacts()
+
+        if not paths: 
+            return True
+
+        all_cleaned = True
+        for item in paths:
+            if not item.exists():
+                continue
+
+            try:
+                if item.is_dir():
+                    shutil.rmtree(item)
+
+                else:
+                    item.unlink(missing_ok=True)
+
+            except OSError:
+                print(f"❌ Failed to clean build/test artifacts at {self.project_path}")
+                all_cleaned = False
+
+        return all_cleaned
+        
+
