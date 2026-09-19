@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "repopy"
-version = "0.3.0"
+version = "0.3.1"
 description = "A modular CLI workspace initializer and cloning automation tool."
 readme = "README.md"
 requires-python = ">=3.8"
