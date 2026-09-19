@@ -41,3 +41,6 @@ exclude_lines = [
     "pragma: no cover",
     "if __name__ == .__main__.:",
 ]
+
+[tool.setuptools.package-data]
+repopy = ["py.typed"]

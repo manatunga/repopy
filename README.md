@@ -8,6 +8,7 @@ A modular, cross-platform Python CLI workspace manager and developer tooling sui
 
 [![CI](https://github.com/manatunga/repopy/actions/workflows/tests.yml/badge.svg)](https://github.com/manatunga/repopy/actions/workflows/tests.yml)&nbsp;&nbsp;&nbsp;
 [![codecov](https://codecov.io/github/manatunga/repopy/graph/badge.svg?token=2JRECANC1G)](https://codecov.io/github/manatunga/repopy)&nbsp;&nbsp;&nbsp;
+[![type checked - mypy](https://img.shields.io/badge/type--checked-mypy-blue?logo=python)](https://mypy-lang.org)&nbsp;&nbsp;&nbsp;
 [![Ruff](https://custom-icon-badges.demolab.com/badge/Ruff-261230.svg?logo=ruff-logo)](#)
 
 ---

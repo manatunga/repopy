@@ -16,8 +16,8 @@ def main() -> None:
         if args.command == 'init':
             print('⌛ Working on it...\n')
             manifest = capture_project_manifests(args)
-            initializer = LocalInitializer(manifest)
-            success = initializer.run()
+            local_initializer = LocalInitializer(manifest)
+            success = local_initializer.run()
 
             if success and args.link:
                 print('⌛ Initiating automated repository link shortcut...')
@@ -26,15 +26,15 @@ def main() -> None:
 
         elif args.command == 'clone':
             print('⌛ Working on it...\n')
-            initializer = CloneInitializer(
+            clone_initializer = CloneInitializer(
                 args.repo_url, args.name, args.install, args.no_install
                 )
-            initializer.run()
+            clone_initializer.run()
 
         elif args.command == 'link':
             print('⌛ Working on it...\n')
-            initializer = LinkInitializer(args.repo_url, args.message)
-            initializer.run()
+            link_initializer = LinkInitializer(args.repo_url, args.message)
+            link_initializer.run()
 
         else:
             print('Usage: repopy [init | clone | link] --help')
