@@ -3,6 +3,8 @@ Orchestration Layer. Core supervisor that amalgamates all inspectors and buildin
 tools and manages the entire user request loop from start to finish.
 '''
 
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 
@@ -103,19 +105,21 @@ class CloneInitializer:
         else:
             should_install = confirm_dependency_installation(deps)
 
-        if should_install:
-            if not fs_engine.install_dependencies():
-                print(f'✅ GitHub repository is ready at {git_engine.project_path}.')
-                print(f'⚠️ Failed to install dependencies from requirements.txt at {git_engine.project_path}')
-                print(fs_engine.get_activation_guide())
-                print('To install dependencies, run the following on your terminal:\n')
-                print('    pip install -r requirements.txt\n')
-                print('Or install them individually by `pip install <module>`\n')
+        if (
+            should_install
+            and not fs_engine.install_dependencies()
+        ):
+            print(f'✅ GitHub repository is ready at {git_engine.project_path}.')
+            print(f'⚠️ Failed to install dependencies from requirements.txt at {git_engine.project_path}')
+            print(fs_engine.get_activation_guide())
+            print('To install dependencies, run the following on your terminal:\n')
+            print('    pip install -r requirements.txt\n')
+            print('Or install them individually by `pip install <module>`\n')
 
-                if confirm_cleanup():
-                    fs_engine.cleanup()
-                    print('Half-baked directory has been cleaned up.')
-                    return False
+            if confirm_cleanup():
+                fs_engine.cleanup()
+                print('Half-baked directory has been cleaned up.')
+                return False
 
         print(f'✅ Success! GitHub repository is ready at {git_engine.project_path}.')
         print(fs_engine.get_activation_guide())

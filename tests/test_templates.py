@@ -2,7 +2,11 @@
 Automated test suite for repopy templates and layouts.
 '''
 
-from repopy.templates import GITIGNORE_TEMPLATE, generate_pyproject_toml, generate_readme
+from repopy.templates import (
+    GITIGNORE_TEMPLATE,
+    generate_pyproject_toml,
+    generate_readme,
+)
 
 
 def test_gitignore_template_content():

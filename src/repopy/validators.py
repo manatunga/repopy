@@ -16,10 +16,7 @@ def is_valid_project_name(name: str) -> bool:
         return False
 
     target_path = Path(name)
-    if target_path.is_dir():
-        return False
-
-    return True
+    return not target_path.is_dir()
 
 
 def is_valid_git_url(url: str) -> bool:
@@ -48,7 +45,4 @@ def is_valid_git_url(url: str) -> bool:
         return False
 
     path_segments = [seg for seg in cleaned_path.split('/') if seg]
-    if len(path_segments) < 2 or path_segments[-1] == '.git':
-        return False
-
-    return True
+    return not (len(path_segments) < 2 or path_segments[-1] == '.git')

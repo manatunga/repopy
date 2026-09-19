@@ -3,6 +3,8 @@ Prompts layer. Handles interactive terminal questionnaires, input validation
 loops, and fallback default configurations.
 '''
 
+from __future__ import annotations
+
 import re
 from pathlib import Path
 
@@ -51,7 +53,7 @@ def capture_project_manifests(cli_args) -> dict:
                 project_name = user_input
                 break
             else:
-                print('Invalid project name (contains illegal characters or folder exists). Please try again.')
+                print('⚠️ Invalid project name (contains illegal characters or folder exists). Please try again.')
 
     if cli_args.theme:
         theme = cli_args.theme
@@ -73,18 +75,18 @@ def capture_project_manifests(cli_args) -> dict:
                     theme = THEME_OPTIONS[user_choice]
                     break
                 else:
-                    print('Invalid choice, please select between 1-4.')
+                    print('⚠️ Invalid choice, please select between 1-4.')
             else:
                 if user_choice in THEME_OPTIONS.values():
                     theme = user_choice
                     break
                 else:
-                    print('Invalid choice, please try again.')
+                    print('⚠️ Invalid choice, please try again.')
 
-    if not theme == 'minimal' and not cli_args.skip:
+    if theme != 'minimal' and not cli_args.skip:
         version_input = input('Enter project version (default: 1.0.0): ').strip()
         while True:
-            if re.search(r'[^0-9.]', version_input) and not version_input == '':
+            if re.search(r'[^0-9.]', version_input) and version_input != '':
                 version_input = input('Please enter a valid version number (Only contains numbers and dots/"."): ')
             elif version_input == '':
                 break

@@ -160,7 +160,7 @@ def test_create_virtual_environment_failure(monkeypatch, tmp_path):
 #-------------------------------------------------------------------------------------
 
 def test_initialize_git_success(monkeypatch, tmp_path):
-    def fake_run(cmd, cwd, capture_output, text):
+    def fake_run(cmd, cwd, capture_output, text, check):
         assert cmd == ['git', 'init']
         assert cwd == tmp_path
         return subprocess.CompletedProcess(args=cmd, returncode=0, stdout='', stderr='')
@@ -171,7 +171,7 @@ def test_initialize_git_success(monkeypatch, tmp_path):
 
 
 def test_initialize_git_nonzero_exit(monkeypatch, tmp_path):
-    def fake_run(cmd, cwd, capture_output, text):
+    def fake_run(cmd, cwd, capture_output, text, check):
         return subprocess.CompletedProcess(args=cmd, returncode=1, stdout='', stderr='git error')
 
     monkeypatch.setattr(subprocess, 'run', fake_run)
@@ -205,7 +205,7 @@ def test_install_dependencies_posix_success(monkeypatch, tmp_path):
 
     executed_cmd = []
 
-    def fake_run(cmd, capture_output, text):
+    def fake_run(cmd, capture_output, text, check):
         executed_cmd.append(cmd)
         return subprocess.CompletedProcess(args=cmd, returncode=0, stdout='', stderr='')
 
@@ -223,7 +223,7 @@ def test_install_dependencies_windows_success(monkeypatch, tmp_path):
 
     executed_cmd = []
 
-    def fake_run(cmd, capture_output, text):
+    def fake_run(cmd, capture_output, text, check):
         executed_cmd.append(cmd)
         return subprocess.CompletedProcess(args=cmd, returncode=0, stdout='', stderr='')
 

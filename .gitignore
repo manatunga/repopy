@@ -17,6 +17,8 @@ __pycache__/
 htmlcov/
 coverage.xml
 .pytest_cache/
+.ruff_cache/
+.mypy_cahce/
 
 # OS metadata & IDEs
 .vscode/

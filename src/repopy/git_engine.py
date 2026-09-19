@@ -4,6 +4,8 @@ holds the methods required to cone a GitHub repository and install
 dependencies.
 '''
 
+from __future__ import annotations
+
 import logging
 import subprocess
 from pathlib import Path
@@ -24,10 +26,15 @@ class GitEngine:
     def clone_repository(self) -> bool:
         '''Clone GitHub repository using the given url to the given directory name'''
         try:
-            result = subprocess.run(['git', 'clone', self.repo_url, str(self.project_path)], text=True)
+            result = subprocess.run(
+                ['git', 'clone', self.repo_url, str(self.project_path)],
+                text=True,
+                check=False
+            )
             return result.returncode == 0
-        except OSError as e:
-            logger.error(f'Failed to clone repository at {self.project_path}: {e}')
+        
+        except OSError:
+            logger.error(f'❌ Failed to clone repository at {self.project_path}')
             return False
 
 
@@ -41,30 +48,53 @@ class GitLinkEngine:
     def link_and_push(self) -> bool:
         '''Runs the sequence of Git terminal execution blocks to link the repo'''
         try:
-            stage_result = subprocess.run(['git', 'add', '.'], capture_output=True, text=True)
+            stage_result = subprocess.run(
+                ['git', 'add', '.'],
+                capture_output=True,
+                text=True,
+                check=False
+            )
             if stage_result.returncode != 0:
                 return False
 
-            commit_result = subprocess.run(['git', 'commit', '-m', self.message], capture_output=True, text=True)
-            if commit_result.returncode != 0:
-                if 'nothing to commit' not in commit_result.stdout:
-                    return False
+            commit_result = subprocess.run(
+                ['git', 'commit', '-m', self.message],
+                capture_output=True,
+                text=True,
+                check=False
+            )
+            if (
+                commit_result.returncode != 0
+                and 'nothing to commit' not in commit_result.stdout
+            ):
+                return False
 
-            branch_result = subprocess.run(['git', 'branch', '-M', 'main'], capture_output=True, text=True)
+            branch_result = subprocess.run(
+                ['git', 'branch', '-M', 'main'],
+                capture_output=True,
+                text=True,
+                check=False
+            )
             if branch_result.returncode != 0:
                 return False
 
-            remote_result = subprocess.run(['git', 'remote', 'add', 'origin', self.repo_url], capture_output=True, text=True)
+            remote_result = subprocess.run(
+                ['git', 'remote', 'add', 'origin', self.repo_url],
+                capture_output=True,
+                text=True,
+                check=False
+            )
             if remote_result.returncode != 0:
                 return False
 
-            push_result = subprocess.run(['git', 'push', '-u', 'origin', 'main'], text=True)
-            if push_result.returncode != 0:
-                return False
+            push_result = subprocess.run(
+                ['git', 'push', '-u', 'origin', 'main'],
+                text=True,
+                check=False
+            )
+            return push_result.returncode == 0
 
-            return True
-
-        except OSError as e:
-            logger.error(f'Failed to execute Git linking operations: {e}')
+        except OSError:
+            logger.error('❌ Failed to execute Git linking operations')
             return False
         
