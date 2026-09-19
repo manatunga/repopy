@@ -203,7 +203,7 @@ To activate the virtual environment and get started, enter the following:
 
 
     def find_cleanable_artifacts(self) -> list[Path]:
-        """Discovers directories and files that are safely cleanable"""
+        """Discovers build artifacts and test caches that are safely cleanable"""
         artifacts: list[Path] = []
 
         target_file_extensions = (".coverage", ".pyc", ".pyo",)
@@ -243,7 +243,7 @@ To activate the virtual environment and get started, enter the following:
 
 
     def clean_artifacts(self, paths: list[Path] | None = None) -> bool:
-        """Cleans discovered directories and files that can be safely removed."""
+        """Cleans discovered build artifacts and test caches safely."""
         if paths is None:
             paths = self.find_cleanable_artifacts()
 
@@ -263,7 +263,7 @@ To activate the virtual environment and get started, enter the following:
                     item.unlink(missing_ok=True)
 
             except OSError:
-                print(f"❌ Failed to clean build/test artifacts at {self.project_path}")
+                print(f"❌ Failed to clean build artifacts/test caches at {self.project_path}")
                 all_cleaned = False
 
         return all_cleaned
