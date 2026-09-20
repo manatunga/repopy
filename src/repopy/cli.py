@@ -112,4 +112,20 @@ def parse_arguments() -> argparse.Namespace:
         help="Custom commit message to use instead of the default repopy message",
     )
 
+    # --------------------------------------------------------------------------------
+    # `repopy clean` subcommand
+    # --------------------------------------------------------------------------------
+
+    clean_parser = subparsers.add_parser(
+        "clean",
+        help="Remove transient build, cache and test artifacts",
+    )
+
+    clean_parser.add_argument(
+        "-y",
+        "--yes",
+        action="store_true",
+        help="Skip interactive confirmation prompt",
+    )
+
     return parser.parse_args()
