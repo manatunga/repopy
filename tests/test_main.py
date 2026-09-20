@@ -142,7 +142,7 @@ def test_main_clean_dispatch_success(monkeypatch):
 
     with pytest.raises(SystemExit) as exc_info:
         main()
-    
+
     assert exc_info.value.code == 0
 
 
@@ -152,7 +152,7 @@ def test_main_clean_dispatch_failure(monkeypatch):
 
     with pytest.raises(SystemExit) as exc_info:
         main()
-    
+
     assert exc_info.value.code == 1
 
 

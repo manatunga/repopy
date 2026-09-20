@@ -8,10 +8,10 @@ import repopy.orchestrators as orch
 from repopy.file_system import FileSystemEngine
 from repopy.git_engine import GitEngine, GitLinkEngine
 from repopy.orchestrators import (
+    CleanInitializer,
     CloneInitializer,
     LinkInitializer,
     LocalInitializer,
-    CleanInitializer
 )
 
 # -------------------------------------------------------------------------------------
@@ -434,7 +434,7 @@ def test_clean_initializer_prompt_rejected(monkeypatch):
     monkeypatch.setattr(
         FileSystemEngine,
         "find_cleanable_artifacts",
-        lambda self: [Path("fake / .coverage")]
+        lambda self: [Path("fake / .coverage")],
     )
     monkeypatch.setattr(orch, "confirm_cleanup_artifacts", lambda _: False)
 
@@ -446,13 +446,12 @@ def test_clean_initializer_prompt_accepted(monkeypatch):
     monkeypatch.setattr(
         FileSystemEngine,
         "find_cleanable_artifacts",
-        lambda self: [Path("fake/.coverage")]
+        lambda self: [Path("fake/.coverage")],
     )
     monkeypatch.setattr(orch, "confirm_cleanup_artifacts", lambda _: True)
     monkeypatch.setattr(
-        FileSystemEngine, 
-        "clean_artifacts", 
-        lambda *args, **kwargs: True)
+        FileSystemEngine, "clean_artifacts", lambda *args, **kwargs: True
+    )
 
     initializer = CleanInitializer(skip_prompt=False)
     assert initializer.run() is True
@@ -469,12 +468,10 @@ def test_clean_initializer_skip_prompt(monkeypatch):
     monkeypatch.setattr(
         FileSystemEngine,
         "find_cleanable_artifacts",
-        lambda self: [Path("fake/.coverage")]
+        lambda self: [Path("fake/.coverage")],
     )
     monkeypatch.setattr(
-        FileSystemEngine,
-        "clean_artifacts",
-        lambda *args, **kwargs: True
+        FileSystemEngine, "clean_artifacts", lambda *args, **kwargs: True
     )
 
     initializer = CleanInitializer(skip_prompt=True)
@@ -486,12 +483,10 @@ def test_clean_initializer_clean_failure(monkeypatch):
     monkeypatch.setattr(
         FileSystemEngine,
         "find_cleanable_artifacts",
-        lambda self: [Path("fake/.coverage")]
+        lambda self: [Path("fake/.coverage")],
     )
     monkeypatch.setattr(
-        FileSystemEngine,
-        "clean_artifacts",
-        lambda *args, **kwargs: False
+        FileSystemEngine, "clean_artifacts", lambda *args, **kwargs: False
     )
 
     initializer = CleanInitializer(skip_prompt=True)

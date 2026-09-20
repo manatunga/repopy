@@ -6,8 +6,8 @@ environments and create .gitignore and README.md templates.
 
 from __future__ import annotations
 
-import os
 import logging
+import os
 import shutil
 import subprocess
 import venv
@@ -189,7 +189,6 @@ To activate the virtual environment and get started, enter the following:
             except OSError:
                 logger.error(f"❌ Failed to clean up directory at {self.project_path}")
 
-
     def build_workspace(self, theme: str, manifest: dict) -> bool:
         """Orchestrate entire file-system creation sequence"""
 
@@ -201,38 +200,37 @@ To activate the virtual environment and get started, enter the following:
             and self.create_virtual_environment()
         )
 
-
     def find_cleanable_artifacts(self) -> list[Path]:
         """Discovers build artifacts and test caches that are safely cleanable"""
         artifacts: list[Path] = []
 
-        target_file_extensions = (".coverage", ".pyc", ".pyo",)
+        target_file_extensions = (
+            ".coverage",
+            ".pyc",
+            ".pyo",
+        )
         excluded_dirs = {".git", ".venv", "venv"}
 
         def is_target_dir(name: str) -> bool:
             lowered = name.lower()
-            return (
-                lowered in {
-                    "__pycache__", 
-                    ".pytest_cache", 
-                    "build", 
-                    "dist", 
-                    ".ruff_cache", 
-                    ".mypy_cahce"
-                }
-                or lowered.endswith(".egg-info")
-            )
+            return lowered in {
+                "__pycache__",
+                ".pytest_cache",
+                "build",
+                "dist",
+                ".ruff_cache",
+                ".mypy_cahce",
+            } or lowered.endswith(".egg-info")
 
         for root, dirs, files in os.walk(self.project_path):
             root_path = Path(root)
-            
+
             matched_dirs = [d for d in dirs if is_target_dir(d)]
             for d in matched_dirs:
                 artifacts.append(root_path / d)
 
             dirs[:] = [
-                d for d in dirs
-                if d not in excluded_dirs and d not in matched_dirs
+                d for d in dirs if d not in excluded_dirs and d not in matched_dirs
             ]
 
             for file in files:
@@ -241,13 +239,12 @@ To activate the virtual environment and get started, enter the following:
 
         return artifacts
 
-
     def clean_artifacts(self, paths: list[Path] | None = None) -> bool:
         """Cleans discovered build artifacts and test caches safely."""
         if paths is None:
             paths = self.find_cleanable_artifacts()
 
-        if not paths: 
+        if not paths:
             return True
 
         all_cleaned = True
@@ -263,9 +260,9 @@ To activate the virtual environment and get started, enter the following:
                     item.unlink(missing_ok=True)
 
             except OSError:
-                print(f"❌ Failed to clean build artifacts/test caches at {self.project_path}")
+                print(
+                    f"❌ Failed to clean build artifacts/test caches at {self.project_path}"
+                )
                 all_cleaned = False
 
         return all_cleaned
-        
-

@@ -377,9 +377,10 @@ def test_find_cleanable_artifacts(tmp_path):
     assert (tmp_path / "__pycache__") in artifacts
     assert (tmp_path / ".coverage") in artifacts
     assert (tmp_path / "src" / "main.py") not in artifacts
-    assert any(
-        str(p).startswith(str((tmp_path / "venv"))) for p in artifacts
-    ) not in artifacts
+    assert (
+        any(str(p).startswith(str(tmp_path / "venv")) for p in artifacts)
+        not in artifacts
+    )
 
 
 def test_clean_artifacts_removes_targets_safely(tmp_path):
@@ -423,7 +424,7 @@ def test_clean_artifacts_non_existent_path(tmp_path):
 
 
 def test_clean_artifacts_handles_os_error(monkeypatch, tmp_path):
-    target = (tmp_path / "locked_file.txt")
+    target = tmp_path / "locked_file.txt"
     target.touch()
 
     def fake_unlink(*args, **kwargs):

@@ -11,7 +11,11 @@ from pathlib import Path
 from repopy.dependencies import has_git, has_python
 from repopy.file_system import FileSystemEngine
 from repopy.git_engine import GitEngine, GitLinkEngine
-from repopy.prompts import confirm_cleanup, confirm_cleanup_artifacts, confirm_dependency_installation
+from repopy.prompts import (
+    confirm_cleanup,
+    confirm_cleanup_artifacts,
+    confirm_dependency_installation,
+)
 from repopy.validators import is_valid_git_url, is_valid_project_name
 
 logger = logging.getLogger(__name__)
@@ -179,10 +183,7 @@ class CleanInitializer:
             print("✨ Workspace is already clean, no cleanable artifacts found.")
             return True
 
-        if (
-            not self.skip_prompt
-            and not confirm_cleanup_artifacts(artifacts)
-        ):
+        if not self.skip_prompt and not confirm_cleanup_artifacts(artifacts):
             print("✖️ Cleanup cancelled.")
             return False
 
@@ -194,4 +195,3 @@ class CleanInitializer:
         else:
             print("⚠️ Some artifacts could not be removed.")
             return False
-        

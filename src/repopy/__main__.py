@@ -3,11 +3,15 @@ Main entrypoint of repopy. Brings together the argument parser and
 the orchestrators together under a main function.
 """
 
-from os import link
 import sys
 
 from repopy.cli import parse_arguments
-from repopy.orchestrators import CleanInitializer, CloneInitializer, LinkInitializer, LocalInitializer
+from repopy.orchestrators import (
+    CleanInitializer,
+    CloneInitializer,
+    LinkInitializer,
+    LocalInitializer,
+)
 from repopy.prompts import capture_project_manifests
 
 

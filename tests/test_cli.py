@@ -3,6 +3,7 @@ Automated test suite for repopy cli parser.
 """
 
 import sys
+
 import pytest
 
 from repopy.cli import parse_arguments

@@ -10,9 +10,9 @@ import pytest
 from repopy.prompts import (
     capture_project_manifests,
     confirm_cleanup,
+    confirm_cleanup_artifacts,
     confirm_dependency_installation,
     resolve_unique_project_name,
-    confirm_cleanup_artifacts
 )
 
 
@@ -227,6 +227,6 @@ def test_confirm_cleanup_artifacts_interrupt(monkeypatch, tmp_path):
         raise KeyboardInterrupt
 
     monkeypatch.setattr("builtins.input", raise_interrupt)
-    
+
     result = confirm_cleanup_artifacts([dummy_file])
     assert result is False

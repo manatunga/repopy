@@ -124,7 +124,9 @@ def confirm_dependency_installation(dependencies: list[str]) -> bool:
 
     try:
         choice = (
-            input("\nDo you want to install these dependencies? [y/N]: ").strip().lower()
+            input("\nDo you want to install these dependencies? [y/N]: ")
+            .strip()
+            .lower()
         )
         return choice in ("y", "yes")
 
@@ -154,7 +156,7 @@ def confirm_cleanup_artifacts(artifacts: list[Path]) -> bool:
             display_path = item.relative_to(Path.cwd())
         except ValueError:
             display_path = item
-        
+
         print(f"    • {display_path}")
 
     try:
