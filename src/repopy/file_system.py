@@ -218,6 +218,7 @@ To activate the virtual environment and get started, enter the following:
                 ".pytest_cache",
                 "build",
                 "dist",
+                "htmlcov/"
                 ".ruff_cache",
                 ".mypy_cahce",
             } or lowered.endswith(".egg-info")

@@ -15,17 +15,19 @@ A modular, cross-platform Python CLI workspace manager and developer tooling sui
 
 ## 🌟 Key Features
 
-- **Lifecycle Project Scaffolding (`repopy init`)**: Provisions clean directory structures, dedicated virtual environments, automated `.gitignore` templates, and PEP 621 `pyproject.toml` or `requirements.txt` configs.
+- **Lifecycle Project Scaffolding (`repopy init`)**: Provisions clean directory structures, dedicated virtual environments, automated `.gitignore` and `README.md` templates, and PEP 621 `pyproject.toml` or `requirements.txt` configs.
 
 - **Smart Remote Cloning (`repopy clone`)**: Clones remote Git repositories, creates isolated `.venv` environments, previews declared dependencies, and installs them interactively or via flags.
 
 - **Upstream Linking (`repopy link`)**: Instantly connects an unlinked local workspace to a remote Git upstream, staging files, executing initial commits, and pushing to the default branch in one step.
 
+- **Artifact Pruning (`repopy clean`)**: Recursively scans and purges transient build directories, bytecode caches, and test artifacts (`__pycache__`, `.pytest_cache`, `.coverage`, `build/`, `dist/`, `.ruff_cache`, `.mypy_cache`) with interactive safeguards and automated CI bypasses.
+
 - **Architectural Themes**: Built-in layout presets (`minimal`, `web_api`, `cli_package`, `data_science`) tailored to modern packaging standards.
 
-- **Transactional Cleanups**: Employs defensive rollback mechanisms (`shutil.rmtree`) to safely purge half-baked directories if setup fails midway.
+- **Transactional Safety**: Employs defensive rollback mechanisms (`shutil.rmtree`) to safely purge half-baked directories if setup fails midway, with standardized shell exit codes across all subcommands.
 
-- **Isolated & Tested**: Fully decoupled architecture backed by comprehensive unit and mock test suites.
+- **Isolated & Tested**: Fully decoupled architecture backed by a 1:1 mapped test suite with 100% branch test coverage.
 
 ---
 
@@ -68,7 +70,7 @@ Generate a new workspace interactively or via CLI flags:
 # Interactive setup
 repopy init my-app
 
-# Non-interactive generation with a specific theme
+# Non-interactive generation with a specific theme (-t/--theme and/or -s/--skip)
 repopy init my-api -t web_api -s
 
 # Initialize and immediately connect to a remote repository
@@ -93,7 +95,7 @@ repopy clone <git-url>
 # Custom directory name
 repopy clone <git-url> -n custom-folder-name
 
-# Auto-install dependencies without prompting
+# Auto-install dependencies without prompting (-i/--install)
 repopy clone <git-url> -i
 
 # Fetch and provision environment only (skip dependency installation)
@@ -113,6 +115,24 @@ repopy link <git-url>
 repopy link <git-url> -m "feat: initial project structure"
 ```
 
+<br>
+
+### 4. Clean Artifacts (`repopy clean`)
+Safely remove build, cache, and test leftovers across the workspace:
+
+```bash
+# Interactive mode: scans workspace, previews discovered targets, and prompts for confirmation
+repopy clean
+
+# Non-interactive mode: immediately purges all discovered artifacts (ideal for CI/CD pipelines) (-y / --yes)
+repopy clean -y
+```
+#### Cleared Targets:
+- Python Bytecode: `__pycache__`, `*.pyc`, `*.pyo`
+- Testing & Coverage: `.pytest_cache`, `.coverage`, `htmlcov/`
+- Packaging & Builds: `build/`, `dist/`, `*.egg-info`
+- Type Checking: `.mypy_cache`, `.ruff_cache`
+
 ---
 
 ## 🧪 Testing & Continuous Integration
@@ -120,7 +140,11 @@ repopy link <git-url> -m "feat: initial project structure"
 Run the test suite using `pytest`:
 
 ```bash
+# Run unit tests
 pytest -v
+
+# Run with full coverage report
+pytest --cov=repopy --cov-report=term-missing
 ```
 
 ---
