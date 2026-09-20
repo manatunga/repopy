@@ -3,7 +3,6 @@ Automated test suite for repopy cli parser.
 """
 
 import sys
-
 import pytest
 
 from repopy.cli import parse_arguments
@@ -62,3 +61,25 @@ def test_clone_mutual_exclusion(monkeypatch):
 
     with pytest.raises(SystemExit):
         parse_arguments()
+
+
+def test_clean_defaults(monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["repopy", "clean"])
+    args = parse_arguments()
+
+    assert args.command == "clean"
+    assert args.skip_prompt is False
+
+
+def test_clean_y_flag(monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["repopy", "clean", "-y"])
+    args = parse_arguments()
+
+    assert args.skip_prompt is True
+
+
+def test_clean_yes_flag(monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["repopy", "clean", "--yes"])
+    args = parse_arguments()
+
+    assert args.skip_prompt is True

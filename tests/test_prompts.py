@@ -12,6 +12,7 @@ from repopy.prompts import (
     confirm_cleanup,
     confirm_dependency_installation,
     resolve_unique_project_name,
+    confirm_cleanup_artifacts
 )
 
 
@@ -205,3 +206,27 @@ def test_confirm_cleanup_handles_ctrl_c(monkeypatch):
 def test_confirm_cleanup_handles_eof_error(monkeypatch):
     monkeypatch.setattr("builtins.input", lambda _: (_ for _ in ()).throw(EOFError))
     assert confirm_cleanup() is False
+
+
+def test_confirm_cleanup_artifacts_yes(monkeypatch, tmp_path):
+    dummy_file = tmp_path / ".coverage"
+    monkeypatch.setattr("builtins.input", lambda _: "y")
+    assert confirm_cleanup_artifacts([dummy_file]) is True
+
+
+def test_confirm_cleanup_artifacts_no(monkeypatch, tmp_path):
+    dummy_file = tmp_path / ".coverage"
+    monkeypatch.setattr("builtins.input", lambda _: "n")
+    assert confirm_cleanup_artifacts([dummy_file]) is False
+
+
+def test_confirm_cleanup_artifacts_interrupt(monkeypatch, tmp_path):
+    dummy_file = tmp_path / ".coverage"
+
+    def raise_interrupt(*args, **kwargs):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr("builtins.input", raise_interrupt)
+    
+    result = confirm_cleanup_artifacts([dummy_file])
+    assert result is False

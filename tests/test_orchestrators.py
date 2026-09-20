@@ -7,7 +7,12 @@ from pathlib import Path
 import repopy.orchestrators as orch
 from repopy.file_system import FileSystemEngine
 from repopy.git_engine import GitEngine, GitLinkEngine
-from repopy.orchestrators import CloneInitializer, LinkInitializer, LocalInitializer
+from repopy.orchestrators import (
+    CloneInitializer,
+    LinkInitializer,
+    LocalInitializer,
+    CleanInitializer
+)
 
 # -------------------------------------------------------------------------------------
 # LocalInitializer Tests
@@ -410,4 +415,84 @@ def test_link_failure(monkeypatch):
     initializer = LinkInitializer(
         "https://github.com/user/repo.git", message="Custom message"
     )
+    assert initializer.run() is False
+
+
+# -------------------------------------------------------------------------------------
+# CleanInitializer Tests
+# -------------------------------------------------------------------------------------
+
+
+def test_clean_initializer_already_clean(monkeypatch):
+    monkeypatch.setattr(FileSystemEngine, "find_cleanable_artifacts", lambda self: [])
+
+    initializer = CleanInitializer(skip_prompt=False)
+    assert initializer.run() is True
+
+
+def test_clean_initializer_prompt_rejected(monkeypatch):
+    monkeypatch.setattr(
+        FileSystemEngine,
+        "find_cleanable_artifacts",
+        lambda self: [Path("fake / .coverage")]
+    )
+    monkeypatch.setattr(orch, "confirm_cleanup_artifacts", lambda _: False)
+
+    initializer = CleanInitializer(skip_prompt=False)
+    assert initializer.run() is False
+
+
+def test_clean_initializer_prompt_accepted(monkeypatch):
+    monkeypatch.setattr(
+        FileSystemEngine,
+        "find_cleanable_artifacts",
+        lambda self: [Path("fake/.coverage")]
+    )
+    monkeypatch.setattr(orch, "confirm_cleanup_artifacts", lambda _: True)
+    monkeypatch.setattr(
+        FileSystemEngine, 
+        "clean_artifacts", 
+        lambda *args, **kwargs: True)
+
+    initializer = CleanInitializer(skip_prompt=False)
+    assert initializer.run() is True
+
+
+def test_clean_initializer_skip_prompt(monkeypatch):
+    called = {"prompt": False}
+
+    def mock_prompt(*args, **kwargs):
+        called["prompt"] = True
+        return True
+
+    monkeypatch.setattr(orch, "confirm_cleanup_artifacts", mock_prompt)
+    monkeypatch.setattr(
+        FileSystemEngine,
+        "find_cleanable_artifacts",
+        lambda self: [Path("fake/.coverage")]
+    )
+    monkeypatch.setattr(
+        FileSystemEngine,
+        "clean_artifacts",
+        lambda *args, **kwargs: True
+    )
+
+    initializer = CleanInitializer(skip_prompt=True)
+    assert initializer.run() is True
+    assert called["prompt"] is False
+
+
+def test_clean_initializer_clean_failure(monkeypatch):
+    monkeypatch.setattr(
+        FileSystemEngine,
+        "find_cleanable_artifacts",
+        lambda self: [Path("fake/.coverage")]
+    )
+    monkeypatch.setattr(
+        FileSystemEngine,
+        "clean_artifacts",
+        lambda *args, **kwargs: False
+    )
+
+    initializer = CleanInitializer(skip_prompt=True)
     assert initializer.run() is False

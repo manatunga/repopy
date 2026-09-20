@@ -36,6 +36,9 @@ Repository = "https://github.com/manatunga/repopy"
 [project.scripts]
 repopy = "repopy.__main__:main"
 
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
 [tool.coverage.report]
 exclude_lines = [
     "pragma: no cover",

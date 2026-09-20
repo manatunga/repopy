@@ -149,9 +149,13 @@ def confirm_cleanup() -> bool:
 
 def confirm_cleanup_artifacts(artifacts: list[Path]) -> bool:
     print("Discovered artifacts to clean:\n")
-    display_item = item.relative_to(Path.cwd()) if item.relative_to(Path.cwd()) else item
     for item in artifacts:
-        print(f"    • {display_item}")
+        try:
+            display_path = item.relative_to(Path.cwd())
+        except ValueError:
+            display_path = item
+        
+        print(f"    • {display_path}")
 
     try:
         answer = input("\nProceed with cleanup? [y/N] :").strip().lower()

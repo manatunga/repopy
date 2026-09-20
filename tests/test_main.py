@@ -60,8 +60,11 @@ def test_main_init_with_link_success(monkeypatch):
 
     monkeypatch.setattr("repopy.__main__.LinkInitializer.run", fake_link_run)
 
-    main()
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+
     assert link_ran is True
+    assert exc_info.value.code == 0
 
 
 def test_main_init_with_link_skipped_on_failure(monkeypatch):
@@ -103,8 +106,11 @@ def test_main_clone_dispatch(monkeypatch):
 
     monkeypatch.setattr("repopy.__main__.CloneInitializer.run", fake_clone_run)
 
-    main()
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+
     assert clone_ran is True
+    assert exc_info.value.code == 0
 
 
 def test_main_link_dispatch(monkeypatch):
@@ -123,8 +129,31 @@ def test_main_link_dispatch(monkeypatch):
 
     monkeypatch.setattr("repopy.__main__.LinkInitializer.run", fake_link_run)
 
-    main()
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+
     assert link_ran is True
+    assert exc_info.value.code == 0
+
+
+def test_main_clean_dispatch_success(monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["repopy", "clean", "-y"])
+    monkeypatch.setattr("repopy.__main__.CleanInitializer.run", lambda self: True)
+
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+    
+    assert exc_info.value.code == 0
+
+
+def test_main_clean_dispatch_failure(monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["repopy", "clean"])
+    monkeypatch.setattr("repopy.__main__.CleanInitializer.run", lambda self: False)
+
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+    
+    assert exc_info.value.code == 1
 
 
 def test_main_no_subcommand_shows_usage(monkeypatch, capsys):
@@ -136,7 +165,7 @@ def test_main_no_subcommand_shows_usage(monkeypatch, capsys):
 
     main()
     captured = capsys.readouterr()
-    assert "Usage: repopy [init | clone | link] --help" in captured.out
+    assert "Usage: repopy [init | clone | link | clean] --help" in captured.out
     assert "Error: Please specify a subcommand" in captured.out
 
 

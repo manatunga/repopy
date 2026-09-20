@@ -124,7 +124,7 @@ def parse_arguments() -> argparse.Namespace:
     clean_parser.add_argument(
         "-y",
         "--yes",
-        dest="skip_prompt"
+        dest="skip_prompt",
         action="store_true",
         help="Skip interactive confirmation prompt",
     )

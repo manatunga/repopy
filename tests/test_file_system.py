@@ -354,3 +354,83 @@ def test_build_workspace_short_circuits_on_failure(monkeypatch, tmp_path):
     monkeypatch.setattr(fs_engine, "initialize_git", lambda: False)
 
     assert fs_engine.build_workspace("minimal", {"project_name": "test"}) is False
+
+
+# -------------------------------------------------------------------------------------
+# Cleanup of Build/Test Artifacts and Caches
+# -------------------------------------------------------------------------------------
+
+
+def test_find_cleanable_artifacts(tmp_path):
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "main.py").touch()
+    (tmp_path / "__pycache__").mkdir()
+    (tmp_path / "__pycache__" / "temp.cpython-312.pyc").touch()
+    (tmp_path / ".coverage").touch()
+
+    (tmp_path / ".venv" / "__pycache__").mkdir(parents=True)
+    (tmp_path / ".venv" / "pyvenv.cfg").touch()
+
+    fs_engine = FileSystemEngine(tmp_path)
+    artifacts = fs_engine.find_cleanable_artifacts()
+
+    assert (tmp_path / "__pycache__") in artifacts
+    assert (tmp_path / ".coverage") in artifacts
+    assert (tmp_path / "src" / "main.py") not in artifacts
+    assert any(
+        str(p).startswith(str((tmp_path / "venv"))) for p in artifacts
+    ) not in artifacts
+
+
+def test_clean_artifacts_removes_targets_safely(tmp_path):
+    (tmp_path / "build").mkdir()
+    (tmp_path / "build" / "build-file.py").touch()
+    (tmp_path / "dist").mkdir()
+    (tmp_path / "dist" / "whl-file.whl").touch()
+
+    (tmp_path / "safe.py").touch()
+    (tmp_path / ".git").mkdir()
+    (tmp_path / ".git" / "config").touch()
+
+    fs_engine = FileSystemEngine(tmp_path)
+    result = fs_engine.clean_artifacts()
+
+    assert result is True
+    assert (tmp_path / "build").exists() is False
+    assert (tmp_path / "dist").exists() is False
+    assert (tmp_path / "safe.py").exists() is True
+    assert (tmp_path / ".git" / "config").exists() is True
+
+
+def test_clean_artifacts_already_clean(tmp_path):
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "main.py").touch()
+    (tmp_path / ".git").mkdir()
+    (tmp_path / ".git" / "config").touch()
+
+    fs_engine = FileSystemEngine(tmp_path)
+    result = fs_engine.clean_artifacts()
+
+    assert result is True
+
+
+def test_clean_artifacts_non_existent_path(tmp_path):
+    ghost_path = tmp_path / "non_existent_folder"
+    fs_engine = FileSystemEngine(tmp_path)
+    result = fs_engine.clean_artifacts([ghost_path])
+
+    assert result is True
+
+
+def test_clean_artifacts_handles_os_error(monkeypatch, tmp_path):
+    target = (tmp_path / "locked_file.txt")
+    target.touch()
+
+    def fake_unlink(*args, **kwargs):
+        raise OSError("Permission denied")
+
+    monkeypatch.setattr(Path, "unlink", fake_unlink)
+    fs_engine = FileSystemEngine(tmp_path)
+    result = fs_engine.clean_artifacts([target])
+
+    assert result is False
