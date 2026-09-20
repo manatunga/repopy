@@ -116,7 +116,7 @@ def capture_project_manifests(cli_args) -> dict:
 
 
 def confirm_dependency_installation(dependencies: list[str]) -> bool:
-    print("\nThis repository contains the following dependencies:")
+    print("This repository contains the following dependencies:\n")
     for dep in dependencies:
         print(f"    • {dep}")
 
@@ -124,7 +124,7 @@ def confirm_dependency_installation(dependencies: list[str]) -> bool:
 
     try:
         choice = (
-            input("Do you want to install these dependencies? [y/N]: ").strip().lower()
+            input("\nDo you want to install these dependencies? [y/N]: ").strip().lower()
         )
         return choice in ("y", "yes")
 
@@ -136,11 +136,27 @@ def confirm_dependency_installation(dependencies: list[str]) -> bool:
 def confirm_cleanup() -> bool:
     try:
         answer = (
-            input("If not, would you like to cleanup the new directory? [y/N]: ")
+            input("\nIf not, would you like to cleanup the new directory? [y/N]: ")
             .strip()
             .lower()
         )
         return answer in ("y", "yes")
 
     except (KeyboardInterrupt, EOFError):
+        print()
+        return False
+
+
+def confirm_cleanup_artifacts(artifacts: list[Path]) -> bool:
+    print("Discovered artifacts to clean:\n")
+    display_item = item.relative_to(Path.cwd()) if item.relative_to(Path.cwd()) else item
+    for item in artifacts:
+        print(f"    • {display_item}")
+
+    try:
+        answer = input("\nProceed with cleanup? [y/N] :").strip().lower()
+        return answer in ("y", "yes")
+
+    except (KeyboardInterrupt, EOFError):
+        print()
         return False
