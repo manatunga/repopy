@@ -1,6 +1,6 @@
 """
 Validation layer. Checks the validity of positional arguments
-for both `repopy local` and `repopy clone`.
+for both `repopy init`, `repopy clone` and `repopy link`.
 """
 
 from pathlib import Path
