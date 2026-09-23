@@ -146,6 +146,9 @@ class WorkspaceInfo:
             deps.sort()
             return (is_venv_active, len(deps), deps)
 
+        except OSError:
+            return (False, None, None)
+
     @classmethod
     def from_project_root(cls, project_root: Path) -> "WorkspaceInfo":
         """Factory method to aggregate project, git, runtime and venv metadata"""
@@ -170,10 +173,4 @@ class WorkspaceInfo:
             package_count=pkg_count,
             packages=pkg_list,
         )
-
-
-
-            
-                
-
-            
+         
