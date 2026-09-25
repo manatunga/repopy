@@ -9,6 +9,7 @@ from repopy.cli import parse_arguments
 from repopy.orchestrators import (
     CleanInitializer,
     CloneInitializer,
+    InfoInitializer,
     LinkInitializer,
     LocalInitializer,
 )
@@ -51,8 +52,13 @@ def main() -> None:
             clean_success = clean_initializer.run()
             sys.exit(0 if clean_success else 1)
 
+        elif args.command == "info":
+            info_initializer = InfoInitializer(args.json)
+            info_success = info_initializer.run()
+            sys.exit(0 if info_success else 1)
+
         else:
-            print("Usage: repopy [init | clone | link | clean] --help")
+            print("Usage: repopy [init | clone | link | clean | info] --help")
             print("⚠️ Error: Please specify a subcommand")
 
     except KeyboardInterrupt:
