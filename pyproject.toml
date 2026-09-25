@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "repopy"
-version = "0.4.1"
-description = "A modular CLI workspace initializer and cloning automation tool."
+version = "0.5.0"
+description = "A CLI tool for Python workspace scaffolding, remote upstream linking, artifact cleanup, and environment inspection."
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
