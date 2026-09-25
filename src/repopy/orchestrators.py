@@ -5,9 +5,8 @@ tools and manages the entire user request loop from start to finish.
 
 from __future__ import annotations
 
-import logging
 import json
-from math import inf
+import logging
 from pathlib import Path
 
 from repopy.dependencies import has_git, has_python

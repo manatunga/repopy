@@ -2,7 +2,9 @@
 Automated test suite for repopy's orchestration layer.
 """
 
+import json
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import repopy.orchestrators as orch
 from repopy.file_system import FileSystemEngine
@@ -10,6 +12,7 @@ from repopy.git_engine import GitEngine, GitLinkEngine
 from repopy.orchestrators import (
     CleanInitializer,
     CloneInitializer,
+    InfoInitializer,
     LinkInitializer,
     LocalInitializer,
 )
@@ -491,3 +494,55 @@ def test_clean_initializer_clean_failure(monkeypatch):
 
     initializer = CleanInitializer(skip_prompt=True)
     assert initializer.run() is False
+
+
+# -------------------------------------------------------------------------------------
+# InfoInitializer Tests
+# -------------------------------------------------------------------------------------
+
+
+def test_info_initializer_text_output(capsys):
+    mock_info = MagicMock()
+    mock_info.project_name = "demo_project"
+    mock_info.project_version = "0.1.0"
+    mock_info.project_root = Path("/tmp/demo")
+
+    with patch("repopy.orchestrators.WorkspaceInfo.from_project_root", return_value=mock_info), \
+         patch("repopy.orchestrators.format_info_output", return_value="MOCKED TEMPLATE OUTPUT") as mock_format:
+
+        initializer = InfoInitializer(as_json=False, project_root=Path("/tmp/demo"))
+        result = initializer.run()
+
+        assert result is True
+        mock_format.assert_called_once_with(mock_info)
+        captured = capsys.readouterr()
+        assert "MOCKED TEMPLATE OUTPUT" in captured.out
+
+
+def test_info_initializer_json_output(capsys):
+    mock_info = MagicMock()
+    mock_info.project_name = "demo_project"
+    mock_info.project_version = "0.1.0"
+    mock_info.project_root = Path("/tmp/demo")
+    mock_info.python_version = "3.11.0"
+    mock_info.is_git_repo = True
+    mock_info.git_branch = "main"
+    mock_info.latest_commit_hash = "abc1234"
+    mock_info.git_remote = "https://github.com/user/demo.git"
+    mock_info.is_venv_active = True
+    mock_info.package_count = 12
+    mock_info.packages = ["pytest", "requests"]
+
+    with patch("repopy.orchestrators.WorkspaceInfo.from_project_root", return_value=mock_info):
+        initializer = InfoInitializer(as_json=True, project_root=Path("/tmp/demo"))
+        result = initializer.run()
+
+        assert result is True
+        captured = capsys.readouterr()
+        data = json.loads(captured.out)
+
+        assert data["project"]["name"] == "demo_project"
+        assert data["project"]["version"] == "0.1.0"
+        assert data["project"]["root"] == "/tmp/demo"
+        assert data["git"]["branch"] == "main"
+        assert data["venv"]["dependency_count"] == 12

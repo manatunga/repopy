@@ -361,6 +361,7 @@ def test_from_project_root_success(monkeypatch, tmp_path):
     assert info.project_root == tmp_path
     assert info.project_name == "my_project"
     assert info.project_version == "0.1.0"
+    assert info.is_git_repo is True
     assert info.git_branch == "main"
     assert info.latest_commit_hash == "a1b2c3d"
     assert info.git_remote == "https://github.com/user/repo.git"
@@ -399,6 +400,7 @@ def test_from_project_root_missing_git_info(monkeypatch, tmp_path):
     assert info.project_root == tmp_path
     assert info.project_name == "my_project"
     assert info.project_version == "0.1.0"
+    assert info.is_git_repo is False
     assert info.git_branch == None
     assert info.latest_commit_hash == None
     assert info.git_remote == None
@@ -438,6 +440,7 @@ def test_from_project_root_missing_project_meta(monkeypatch, tmp_path):
     assert info.project_root == tmp_path
     assert info.project_name == None
     assert info.project_version == None
+    assert info.is_git_repo is True
     assert info.git_branch == "main"
     assert info.latest_commit_hash == "a1b2c3d"
     assert info.git_remote == "https://github.com/user/repo.git"
@@ -480,6 +483,7 @@ def test_from_project_root_missing_venv_info(monkeypatch, tmp_path):
     assert info.project_root == tmp_path
     assert info.project_name == "my_project"
     assert info.project_version == "0.1.0"
+    assert info.is_git_repo == True
     assert info.git_branch == "main"
     assert info.latest_commit_hash == "a1b2c3d"
     assert info.git_remote == "https://github.com/user/repo.git"

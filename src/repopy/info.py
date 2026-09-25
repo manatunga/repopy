@@ -27,6 +27,7 @@ class WorkspaceInfo:
     project_root: Path
     project_name: str | None = None
     project_version: str | None = None
+    is_git_repo: bool = False
     git_branch: str | None = None
     latest_commit_hash: str | None = None
     git_remote: str | None = None
@@ -171,6 +172,7 @@ class WorkspaceInfo:
             project_root=project_root,
             project_name=name,
             project_version=version,
+            is_git_repo=bool(branch),
             git_branch=branch,
             latest_commit_hash=commit,
             git_remote=remote,

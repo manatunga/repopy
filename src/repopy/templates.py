@@ -81,7 +81,7 @@ def format_info_output(info) -> str:
         lines.append(f"  • Remote URL : {info.git_remote or 'None'}")
 
     else:
-        lines.append(f"  • Not a Git repository")
+        lines.append("  • Not a Git repository")
 
     lines.append("\n⚙️ Virtual Environment")
     if info.is_venv_active:
