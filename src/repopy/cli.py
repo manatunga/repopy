@@ -129,4 +129,20 @@ def parse_arguments() -> argparse.Namespace:
         help="Skip interactive confirmation prompt",
     )
 
+    # --------------------------------------------------------------------------------
+    # `repopy info` subcommand
+    # --------------------------------------------------------------------------------
+
+    info_parser = subparsers.add_parser(
+        "info",
+        help="Fetch and display project , git, venv, dependencies and runtime metadata",
+    )
+
+    info_parser.add_argument(
+        "-j",
+        "--json",
+        action="store_true",
+        help="Output project metadata in JSON format"
+    )
+
     return parser.parse_args()
