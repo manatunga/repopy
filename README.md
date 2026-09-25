@@ -181,7 +181,7 @@ mypy src/repopy
 repopy/
 ├── .github/
 │   └── workflows/
-│       ├── ci.py                # CI test runner pipeline
+│       ├── ci.yml               # CI test runner pipeline
 │       └── publish.yml          # CD PyPI deployer pipeline
 ├── src/
 │   └── repopy/
