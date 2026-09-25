@@ -35,6 +35,7 @@ class WorkspaceInfo:
     package_count: int | None = None
     packages: list[str] | None = None
 
+    @staticmethod
     def _get_git_info(project_root: Path):
         """Class method to extract git repository metadata"""
 
@@ -55,6 +56,7 @@ class WorkspaceInfo:
 
         return branch, commit, raw_url
 
+    @staticmethod
     def _sanitize_remote_url(raw_url: str) -> str:
         """Helper function for _get_git_info to parse remote URLs"""
         if raw_url.startswith(("http://", "https://")):
@@ -69,6 +71,7 @@ class WorkspaceInfo:
 
         return raw_url
 
+    @staticmethod
     def _get_project_meta(project_root: Path) -> tuple[str | None, str | None]:
         """Class method to safely inspects pyproject.toml"""
         try:
@@ -94,6 +97,7 @@ class WorkspaceInfo:
         except (tomllib.TOMLDecodeError, OSError):
             return (None, None)
 
+    @staticmethod
     def _find_site_packages(venv_path: Path) -> Path | None:
         """Helper function for _get_venv_info to locate site packages"""
         if is_windows():
@@ -109,6 +113,7 @@ class WorkspaceInfo:
 
         return None
 
+    @staticmethod
     def _get_venv_info(project_root: Path) -> tuple[bool, int | None, list[str] | None]:
         """Class method that extracts runtime, venv and dependency data"""
         VENV_CANDIDATES = (

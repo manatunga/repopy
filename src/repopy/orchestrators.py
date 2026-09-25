@@ -201,7 +201,7 @@ class CleanInitializer:
 
 
 class InfoInitializer:
-    def __init__(self, as_json: bool, project_root: Path | None):
+    def __init__(self, as_json: bool, project_root: Path | None = None):
         self.as_json = bool(as_json)
         self.project_root = project_root if project_root else Path.cwd()
 
