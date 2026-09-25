@@ -5,14 +5,12 @@ and information regarding runtime version, project name, git branch, etc.
 
 from __future__ import annotations
 
-import sys
 import subprocess
+import sys
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Self
-from urllib.parse import urlparse
 from importlib.metadata import distributions
-import venv
+from pathlib import Path
+from urllib.parse import urlparse
 
 from repopy.os_detector import is_windows
 
@@ -20,6 +18,7 @@ if sys.version_info >= (3, 11):
     import tomllib
 else:
     import tomli as tomllib
+
 
 @dataclass(frozen=True)
 class WorkspaceInfo:
@@ -37,20 +36,23 @@ class WorkspaceInfo:
 
     def _get_git_info(project_root: Path):
         """Class method to extract git repository metadata"""
+
         def _run_git(args: list[str], cwd: Path) -> str | None:
             try:
                 result = subprocess.run(
-                    ["git", *args],
-                    cwd=cwd,
-                    capture_output=True,
-                    text=True,
-                    check=False
+                    ["git", *args], cwd=cwd, capture_output=True, text=True, check=False
                 )
-                output = result.stdout.strip()    
+                output = result.stdout.strip()
                 return output if result.returncode == 0 and output else None
 
             except FileNotFoundError:
                 return None
+
+        branch = _run_git(["branch", "--show-current"], cwd=project_root)
+        commit = _run_git(["rev-parse", "--short", "HEAD"], cwd=project_root)
+        raw_url = _run_git(["config", "--get", "remote.origin.url"], cwd=project_root)
+
+        return branch, commit, raw_url
 
     def _sanitize_remote_url(raw_url: str) -> str:
         """Helper function for _get_git_info to parse remote URLs"""
@@ -62,7 +64,7 @@ class WorkspaceInfo:
                 if parsed.port:
                     host_info = f"{host_info}:{parsed.port}"
 
-                return parsed._replace(netloc=host_info).geturl()    
+                return parsed._replace(netloc=host_info).geturl()
 
         return raw_url
 
@@ -106,18 +108,21 @@ class WorkspaceInfo:
 
         return None
 
-    def _get_venv_info(project_root: Path) -> tuple[
-        bool, int | None, list[str] | None
-    ]:
+    def _get_venv_info(project_root: Path) -> tuple[bool, int | None, list[str] | None]:
         """Class method that extracts runtime, venv and dependency data"""
-        VENV_CANDIDATES = (".venv", "venv", ".env", "env",)
+        VENV_CANDIDATES = (
+            ".venv",
+            "venv",
+            ".env",
+            "env",
+        )
         try:
             is_venv_active = sys.prefix != sys.base_prefix
             venv_path: Path | None = None
-            
+
             if is_venv_active:
                 venv_path = Path(sys.prefix)
-            else:    
+            else:
                 for candidate in VENV_CANDIDATES:
                     candidate_path = project_root / candidate
 
@@ -150,10 +155,10 @@ class WorkspaceInfo:
             return (False, None, None)
 
     @classmethod
-    def from_project_root(cls, project_root: Path) -> "WorkspaceInfo":
+    def from_project_root(cls, project_root: Path) -> WorkspaceInfo:
         """Factory method to aggregate project, git, runtime and venv metadata"""
         branch, commit, raw_url = cls._get_git_info(project_root)
-        remote = cls._sanitize_remote_url(raw_url)
+        remote = cls._sanitize_remote_url(raw_url) if raw_url else None
         name, version = cls._get_project_meta(project_root)
         is_active, pkg_count, pkg_list = cls._get_venv_info(project_root)
 
@@ -173,4 +178,3 @@ class WorkspaceInfo:
             package_count=pkg_count,
             packages=pkg_list,
         )
-         
