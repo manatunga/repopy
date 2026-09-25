@@ -6,16 +6,20 @@ tools and manages the entire user request loop from start to finish.
 from __future__ import annotations
 
 import logging
+import json
+from math import inf
 from pathlib import Path
 
 from repopy.dependencies import has_git, has_python
 from repopy.file_system import FileSystemEngine
 from repopy.git_engine import GitEngine, GitLinkEngine
+from repopy.info import WorkspaceInfo
 from repopy.prompts import (
     confirm_cleanup,
     confirm_cleanup_artifacts,
     confirm_dependency_installation,
 )
+from repopy.templates import format_info_output
 from repopy.validators import is_valid_git_url, is_valid_project_name
 
 logger = logging.getLogger(__name__)
@@ -195,3 +199,42 @@ class CleanInitializer:
         else:
             print("⚠️ Some artifacts could not be removed.")
             return False
+
+
+class InfoInitializer:
+    def __init__(self, as_json: bool, project_root: Path | None):
+        self.as_json = bool(as_json)
+        self.project_root = project_root if project_root else Path.cwd()
+
+    def run(self) -> bool:
+        """Runs when `repopy info` is called"""
+        info = WorkspaceInfo.from_project_root(self.project_root)
+
+        if self.as_json == True:
+            data = {
+                "project": {
+                    "name": info.project_name,
+                    "version": info.project_version,
+                    "root": str(info.project_root),
+                },
+                "runtime": {
+                    "python_version": info.python_version,
+                },
+                "git": {
+                    "is_repo": info.is_git_repo,
+                    "branch": info.git_branch,
+                    "commit": info.latest_commit_hash,
+                    "remote_url": info.git_remote,
+                },
+                "venv": {
+                    "is_active": info.is_venv_active,
+                    "dependency_count": info.package_count,
+                    "dependencies": info.packages
+                },
+            }
+            print(json.dumps(data, indent=2))
+
+        else:
+            print(format_info_output(info))
+
+        return True
