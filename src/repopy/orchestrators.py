@@ -228,7 +228,7 @@ class InfoInitializer:
                 "venv": {
                     "is_active": info.is_venv_active,
                     "dependency_count": info.package_count,
-                    "dependencies": info.packages
+                    "dependencies": info.packages,
                 },
             }
             print(json.dumps(data, indent=2))

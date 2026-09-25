@@ -507,9 +507,11 @@ def test_info_initializer_text_output(capsys):
     mock_info.project_version = "0.1.0"
     mock_info.project_root = Path("/tmp/demo")
 
-    with patch("repopy.orchestrators.WorkspaceInfo.from_project_root", return_value=mock_info), \
-         patch("repopy.orchestrators.format_info_output", return_value="MOCKED TEMPLATE OUTPUT") as mock_format:
-
+    with patch(
+        "repopy.orchestrators.WorkspaceInfo.from_project_root", return_value=mock_info
+    ), patch(
+        "repopy.orchestrators.format_info_output", return_value="MOCKED TEMPLATE OUTPUT"
+    ) as mock_format:
         initializer = InfoInitializer(as_json=False, project_root=Path("/tmp/demo"))
         result = initializer.run()
 
@@ -533,7 +535,9 @@ def test_info_initializer_json_output(capsys):
     mock_info.package_count = 12
     mock_info.packages = ["pytest", "requests"]
 
-    with patch("repopy.orchestrators.WorkspaceInfo.from_project_root", return_value=mock_info):
+    with patch(
+        "repopy.orchestrators.WorkspaceInfo.from_project_root", return_value=mock_info
+    ):
         initializer = InfoInitializer(as_json=True, project_root=Path("/tmp/demo"))
         result = initializer.run()
 

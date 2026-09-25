@@ -3,6 +3,7 @@ Automated test suite for repopy's main entrypoint.
 """
 
 import sys
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -156,6 +157,52 @@ def test_main_clean_dispatch_failure(monkeypatch):
     assert exc_info.value.code == 1
 
 
+def test_main_info_dispatch(monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["repopy", "info"])
+
+    with patch("repopy.__main__.InfoInitializer") as mock_initializer_cls:
+        mock_instance = MagicMock()
+        mock_instance.run.return_value = True
+        mock_initializer_cls.return_value = mock_instance
+
+        with pytest.raises(SystemExit) as exc_info:
+            main()
+
+        assert exc_info.value.code == 0
+        mock_initializer_cls.assert_called_once_with(False)
+        mock_instance.run.assert_called_once()
+
+
+def test_main_info_command_json_flag(monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["repopy", "info", "--json"])
+
+    with patch("repopy.__main__.InfoInitializer") as mock_initializer_cls:
+        mock_instance = MagicMock()
+        mock_instance.run.return_value = True
+        mock_initializer_cls.return_value = mock_instance
+
+        with pytest.raises(SystemExit) as exc_info:
+            main()
+
+        assert exc_info.value.code == 0
+        mock_initializer_cls.assert_called_once_with(True)
+        mock_instance.run.assert_called_once()
+
+
+def test_main_info_command_failure(monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["repopy", "info"])
+
+    with patch("repopy.__main__.InfoInitializer") as mock_initializer_cls:
+        mock_instance = MagicMock()
+        mock_instance.run.return_value = False
+        mock_initializer_cls.return_value = mock_instance
+
+        with pytest.raises(SystemExit) as exc_info:
+            main()
+
+        assert exc_info.value.code == 1
+
+
 def test_main_no_subcommand_shows_usage(monkeypatch, capsys):
     # Mock parse_arguments to simulate an args namespace without a recognized command
     class MockArgs:
@@ -165,7 +212,7 @@ def test_main_no_subcommand_shows_usage(monkeypatch, capsys):
 
     main()
     captured = capsys.readouterr()
-    assert "Usage: repopy [init | clone | link | clean] --help" in captured.out
+    assert "Usage: repopy [init | clone | link | clean | info] --help" in captured.out
     assert "Error: Please specify a subcommand" in captured.out
 
 

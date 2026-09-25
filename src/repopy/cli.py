@@ -142,7 +142,7 @@ def parse_arguments() -> argparse.Namespace:
         "-j",
         "--json",
         action="store_true",
-        help="Output project metadata in JSON format"
+        help="Output project metadata in JSON format",
     )
 
     return parser.parse_args()

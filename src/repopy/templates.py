@@ -89,7 +89,11 @@ def format_info_output(info) -> str:
     else:
         lines.append("  • Status     : Inactive / Not detected")
 
-    count_str = f"{info.package_count} installed" if info.package_count is not None else "Unknown"
+    count_str = (
+        f"{info.package_count} installed"
+        if info.package_count is not None
+        else "Unknown"
+    )
     lines.append(f"  • Packages   : {count_str}")
 
     return "\n".join(lines)
