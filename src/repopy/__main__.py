@@ -6,60 +6,14 @@ the orchestrators together under a main function.
 import sys
 
 from repopy.cli import parse_arguments
-from repopy.orchestrators import (
-    CleanInitializer,
-    CloneInitializer,
-    InfoInitializer,
-    LinkInitializer,
-    LocalInitializer,
-)
-from repopy.prompts import capture_project_manifests
+from repopy.commands import COMMANDS
 
 
 def main() -> None:
     try:
         args = parse_arguments()
-
-        if args.command == "init":
-            print("⌛ Initializing project...\n")
-            manifest = capture_project_manifests(args)
-            local_initializer = LocalInitializer(manifest)
-            success = local_initializer.run()
-
-            if success and args.link:
-                print("\n⌛ Initiating automated repository link shortcut...\n")
-                link_initializer = LinkInitializer(args.link, args.message)
-                link_success = link_initializer.run()
-                sys.exit(0 if link_success else 1)
-
-        elif args.command == "clone":
-            print("⌛ Working on it...\n")
-            clone_initializer = CloneInitializer(
-                args.repo_url, args.name, args.install, args.no_install
-            )
-            clone_success = clone_initializer.run()
-            sys.exit(0 if clone_success else 1)
-
-        elif args.command == "link":
-            print("⌛ Working on it...\n")
-            link_initializer = LinkInitializer(args.repo_url, args.message)
-            link_success = link_initializer.run()
-            sys.exit(0 if link_success else 1)
-
-        elif args.command == "clean":
-            print("⌛ Scanning for artifacts...\n")
-            clean_initializer = CleanInitializer(args.skip_prompt)
-            clean_success = clean_initializer.run()
-            sys.exit(0 if clean_success else 1)
-
-        elif args.command == "info":
-            info_initializer = InfoInitializer(args.json)
-            info_success = info_initializer.run()
-            sys.exit(0 if info_success else 1)
-
-        else:
-            print("Usage: repopy [init | clone | link | clean | info] --help")
-            print("⚠️ Error: Please specify a subcommand")
+        success = COMMANDS[args.command].run(args)
+        sys.exit(0 if success else 1)
 
     except KeyboardInterrupt:
         print("\n ✖️ Workspace operation cancelled by user.")

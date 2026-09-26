@@ -16,7 +16,7 @@ def test_main_init_dispatch(monkeypatch):
     # Supply the expected 'project_name' key
     mock_manifest = {"project_name": "my-app", "theme": "minimal"}
     monkeypatch.setattr(
-        "repopy.__main__.capture_project_manifests", lambda args: mock_manifest
+        "repopy.commands.init.capture_project_manifests", lambda args: mock_manifest
     )
 
     ran = False
@@ -26,10 +26,13 @@ def test_main_init_dispatch(monkeypatch):
         ran = True
         return True
 
-    monkeypatch.setattr("repopy.__main__.LocalInitializer.run", fake_run)
+    monkeypatch.setattr("repopy.commands.init.LocalInitializer.run", fake_run)
 
-    main()
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+
     assert ran is True
+    assert exc_info.value.code == 0
 
 
 def test_main_init_with_link_success(monkeypatch):
@@ -48,9 +51,9 @@ def test_main_init_with_link_success(monkeypatch):
     )
     mock_manifest = {"project_name": "my-app", "theme": "minimal"}
     monkeypatch.setattr(
-        "repopy.__main__.capture_project_manifests", lambda args: mock_manifest
+        "repopy.commands.init.capture_project_manifests", lambda args: mock_manifest
     )
-    monkeypatch.setattr("repopy.__main__.LocalInitializer.run", lambda self: True)
+    monkeypatch.setattr("repopy.commands.init.LocalInitializer.run", lambda self: True)
 
     link_ran = False
 
@@ -59,7 +62,7 @@ def test_main_init_with_link_success(monkeypatch):
         link_ran = True
         return True
 
-    monkeypatch.setattr("repopy.__main__.LinkInitializer.run", fake_link_run)
+    monkeypatch.setattr("repopy.commands.link.LinkInitializer.run", fake_link_run)
 
     with pytest.raises(SystemExit) as exc_info:
         main()
@@ -76,19 +79,21 @@ def test_main_init_with_link_skipped_on_failure(monkeypatch):
     )
     mock_manifest = {"project_name": "my-app", "theme": "minimal"}
     monkeypatch.setattr(
-        "repopy.__main__.capture_project_manifests", lambda args: mock_manifest
+        "repopy.commands.init.capture_project_manifests", lambda args: mock_manifest
     )
-    # LocalInitializer returns False
-    monkeypatch.setattr("repopy.__main__.LocalInitializer.run", lambda self: False)
+    monkeypatch.setattr("repopy.commands.init.LocalInitializer.run", lambda self: False)
 
     def fail_if_link_called(self):
         raise AssertionError(
             "LinkInitializer should not run when LocalInitializer fails"
         )
 
-    monkeypatch.setattr("repopy.__main__.LinkInitializer.run", fail_if_link_called)
+    monkeypatch.setattr("repopy.commands.link.LinkInitializer.run", fail_if_link_called)
 
-    main()
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+
+    assert exc_info.value.code == 1
 
 
 def test_main_clone_dispatch(monkeypatch):
@@ -105,7 +110,7 @@ def test_main_clone_dispatch(monkeypatch):
         clone_ran = True
         return True
 
-    monkeypatch.setattr("repopy.__main__.CloneInitializer.run", fake_clone_run)
+    monkeypatch.setattr("repopy.commands.clone.CloneInitializer.run", fake_clone_run)
 
     with pytest.raises(SystemExit) as exc_info:
         main()
@@ -128,7 +133,7 @@ def test_main_link_dispatch(monkeypatch):
         link_ran = True
         return True
 
-    monkeypatch.setattr("repopy.__main__.LinkInitializer.run", fake_link_run)
+    monkeypatch.setattr("repopy.commands.link.LinkInitializer.run", fake_link_run)
 
     with pytest.raises(SystemExit) as exc_info:
         main()
@@ -139,7 +144,7 @@ def test_main_link_dispatch(monkeypatch):
 
 def test_main_clean_dispatch_success(monkeypatch):
     monkeypatch.setattr(sys, "argv", ["repopy", "clean", "-y"])
-    monkeypatch.setattr("repopy.__main__.CleanInitializer.run", lambda self: True)
+    monkeypatch.setattr("repopy.commands.clean.CleanInitializer.run", lambda self: True)
 
     with pytest.raises(SystemExit) as exc_info:
         main()
@@ -149,7 +154,9 @@ def test_main_clean_dispatch_success(monkeypatch):
 
 def test_main_clean_dispatch_failure(monkeypatch):
     monkeypatch.setattr(sys, "argv", ["repopy", "clean"])
-    monkeypatch.setattr("repopy.__main__.CleanInitializer.run", lambda self: False)
+    monkeypatch.setattr(
+        "repopy.commands.clean.CleanInitializer.run", lambda self: False
+    )
 
     with pytest.raises(SystemExit) as exc_info:
         main()
@@ -160,7 +167,7 @@ def test_main_clean_dispatch_failure(monkeypatch):
 def test_main_info_dispatch(monkeypatch):
     monkeypatch.setattr(sys, "argv", ["repopy", "info"])
 
-    with patch("repopy.__main__.InfoInitializer") as mock_initializer_cls:
+    with patch("repopy.commands.info.InfoInitializer") as mock_initializer_cls:
         mock_instance = MagicMock()
         mock_instance.run.return_value = True
         mock_initializer_cls.return_value = mock_instance
@@ -176,7 +183,7 @@ def test_main_info_dispatch(monkeypatch):
 def test_main_info_command_json_flag(monkeypatch):
     monkeypatch.setattr(sys, "argv", ["repopy", "info", "--json"])
 
-    with patch("repopy.__main__.InfoInitializer") as mock_initializer_cls:
+    with patch("repopy.commands.info.InfoInitializer") as mock_initializer_cls:
         mock_instance = MagicMock()
         mock_instance.run.return_value = True
         mock_initializer_cls.return_value = mock_instance
@@ -192,7 +199,7 @@ def test_main_info_command_json_flag(monkeypatch):
 def test_main_info_command_failure(monkeypatch):
     monkeypatch.setattr(sys, "argv", ["repopy", "info"])
 
-    with patch("repopy.__main__.InfoInitializer") as mock_initializer_cls:
+    with patch("repopy.commands.info.InfoInitializer") as mock_initializer_cls:
         mock_instance = MagicMock()
         mock_instance.run.return_value = False
         mock_initializer_cls.return_value = mock_instance
@@ -201,19 +208,6 @@ def test_main_info_command_failure(monkeypatch):
             main()
 
         assert exc_info.value.code == 1
-
-
-def test_main_no_subcommand_shows_usage(monkeypatch, capsys):
-    # Mock parse_arguments to simulate an args namespace without a recognized command
-    class MockArgs:
-        command = None
-
-    monkeypatch.setattr("repopy.__main__.parse_arguments", lambda: MockArgs())
-
-    main()
-    captured = capsys.readouterr()
-    assert "Usage: repopy [init | clone | link | clean | info] --help" in captured.out
-    assert "Error: Please specify a subcommand" in captured.out
 
 
 def test_main_keyboard_interrupt_exits_cleanly(monkeypatch, capsys):

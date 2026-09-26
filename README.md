@@ -185,9 +185,18 @@ repopy/
 │       └── publish.yml          # CD PyPI deployer pipeline
 ├── src/
 │   └── repopy/
-│       ├── init.py              # Package initialization
-│       ├── main.py              # Application execution entry
+│       ├── __init__.py          # Package initialization
+│       ├── __main__.py          # Application execution entry
 │       ├── cli.py               # CLI subparser configuration
+│       ├── commands/            # Command registry & individual command definitions
+│       │   ├── __init__.py      # Command registry (COMMANDS dict)
+│       │   ├── base.py          # Command(ABC) — shared command contract
+│       │   ├── clean.py         # CleanCommand definition
+│       │   ├── clone.py         # CloneCommand definition
+│       │   ├── info.py          # InfoCommand definition
+│       │   ├── init.py          # InitCommand definition
+│       │   └── link.py          # LinkCommand definition
+│       │
 │       ├── dependencies.py      # Binary prerequisite verification
 │       ├── file_system.py       # Atomic workspace & venv operations
 │       ├── git_engine.py        # Subprocess Git execution engine
@@ -197,9 +206,11 @@ repopy/
 │       ├── prompts.py           # Dynamic terminal questionnaires
 │       ├── templates.py         # Output formatting & asset manifests
 │       └── validators.py        # Input sanitation & regex filters
+│
 ├── tests/
-│   ├── init.py
+│   ├── __init__.py
 │   ├── test_cli.py              # CLI argument parser & flag exclusivity tests
+│   ├── test_commands.py         # Command registry integrity tests
 │   ├── test_dependencies.py     # Binary detection & absence verification tests
 │   ├── test_file_system.py      # Workspace scaffolding & requirements parsing tests
 │   ├── test_git_engine.py       # Subprocess Git mocking & exit code tests
@@ -210,6 +221,7 @@ repopy/
 │   ├── test_prompts.py          # Input loop & default manifest tests
 │   ├── test_templates.py        # Output formatting & asset template tests
 │   └── test_validators.py       # Path and schema validation tests
+│
 ├── pyproject.toml               # PEP 621 packaging configuration
 ├── LICENSE                      # MIT License
 └── README.md
