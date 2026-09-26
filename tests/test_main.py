@@ -8,9 +8,10 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from repopy.__main__ import main
+from repopy.commands import COMMANDS
 
 
-def test_main_init_dispatch(monkeypatch):
+def test_main_init_dispatch(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(sys, "argv", ["repopy", "init", "my-app"])
 
     # Supply the expected 'project_name' key
@@ -35,7 +36,7 @@ def test_main_init_dispatch(monkeypatch):
     assert exc_info.value.code == 0
 
 
-def test_main_init_with_link_success(monkeypatch):
+def test_main_init_with_link_success(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(
         sys,
         "argv",
@@ -71,7 +72,7 @@ def test_main_init_with_link_success(monkeypatch):
     assert exc_info.value.code == 0
 
 
-def test_main_init_with_link_skipped_on_failure(monkeypatch):
+def test_main_init_with_link_skipped_on_failure(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(
         sys,
         "argv",
@@ -96,7 +97,32 @@ def test_main_init_with_link_skipped_on_failure(monkeypatch):
     assert exc_info.value.code == 1
 
 
-def test_main_clone_dispatch(monkeypatch):
+def test_main_clone_command_run_calls_initializer_correctly():
+    args = MagicMock(
+        repo_url="https://github.com/user/repo.git",
+        name="my_project",
+        install=False,
+        no_install=False
+    )
+
+    with patch("repopy.commands.clone.CloneInitializer") as mock_initializer_cls:
+        mock_instance = MagicMock()
+        mock_instance.run.return_value = True
+        mock_initializer_cls.return_value = mock_instance
+
+        result = COMMANDS["link"].run(args)
+
+        mock_initializer_cls.assert_called_once_with(
+            "https://github.com/user/repo.git",
+            "my_project",
+            False,
+            False
+        )
+        mock_instance.run.assert_called_once()
+        assert result is True
+
+
+def test_main_clone_dispatch(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(
         sys,
         "argv",
@@ -119,7 +145,27 @@ def test_main_clone_dispatch(monkeypatch):
     assert exc_info.value.code == 0
 
 
-def test_main_link_dispatch(monkeypatch):
+def test_main_link_command_run_calls_initializer_correctly():
+    args = MagicMock(
+        repo_url="https://github.com/user/repo.git",
+        message="First commit"
+    )
+
+    with patch("repopy.commands.link.LinkInitializer") as mock_initializer_cls:
+        mock_instance = MagicMock()
+        mock_instance.run.return_value = True
+        mock_initializer_cls.return_value = mock_instance
+
+        result = COMMANDS["link"].run(args)
+
+        mock_initializer_cls.assert_called_once_with(
+            "https://github.com/user/repo.git", "First commit"
+        )
+        mock_instance.run.assert_called_once()
+        assert result is True
+
+
+def test_main_link_dispatch(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(
         sys,
         "argv",
@@ -142,7 +188,22 @@ def test_main_link_dispatch(monkeypatch):
     assert exc_info.value.code == 0
 
 
-def test_main_clean_dispatch_success(monkeypatch):
+def test_main_clean_command_run_calls_initializer_correctly():
+    args = MagicMock(skip_prompt=True)
+
+    with patch("repopy.commands.clean.CleanInitializer") as mock_initializer_cls:
+        mock_instance = MagicMock()
+        mock_instance.run.return_value = True
+        mock_initializer_cls.return_value = mock_instance
+
+        result = COMMANDS["clean"].run(args)
+
+        mock_initializer_cls.assert_called_once_with(True)
+        mock_instance.run.assert_called_once()
+        assert result is True
+
+
+def test_main_clean_dispatch_success(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(sys, "argv", ["repopy", "clean", "-y"])
     monkeypatch.setattr("repopy.commands.clean.CleanInitializer.run", lambda self: True)
 
@@ -152,7 +213,7 @@ def test_main_clean_dispatch_success(monkeypatch):
     assert exc_info.value.code == 0
 
 
-def test_main_clean_dispatch_failure(monkeypatch):
+def test_main_clean_dispatch_failure(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(sys, "argv", ["repopy", "clean"])
     monkeypatch.setattr(
         "repopy.commands.clean.CleanInitializer.run", lambda self: False
@@ -164,7 +225,22 @@ def test_main_clean_dispatch_failure(monkeypatch):
     assert exc_info.value.code == 1
 
 
-def test_main_info_dispatch(monkeypatch):
+def test_main_info_command_run_calls_initializer_correctly():
+    args = MagicMock(json=True)
+
+    with patch("repopy.commands.info.InfoInitializer") as mock_initializer_cls:
+        mock_instance = MagicMock()
+        mock_instance.run.return_value = True
+        mock_initializer_cls.return_value = mock_instance
+
+        result = COMMANDS["info"].run(args)
+
+        mock_initializer_cls.assert_called_once_with(True)
+        mock_instance.run.assert_called_once()
+        assert result is True
+
+
+def test_main_info_dispatch(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(sys, "argv", ["repopy", "info"])
 
     with patch("repopy.commands.info.InfoInitializer") as mock_initializer_cls:
@@ -180,7 +256,7 @@ def test_main_info_dispatch(monkeypatch):
         mock_instance.run.assert_called_once()
 
 
-def test_main_info_command_json_flag(monkeypatch):
+def test_main_info_command_json_flag(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(sys, "argv", ["repopy", "info", "--json"])
 
     with patch("repopy.commands.info.InfoInitializer") as mock_initializer_cls:
@@ -196,7 +272,7 @@ def test_main_info_command_json_flag(monkeypatch):
         mock_instance.run.assert_called_once()
 
 
-def test_main_info_command_failure(monkeypatch):
+def test_main_info_command_failure(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(sys, "argv", ["repopy", "info"])
 
     with patch("repopy.commands.info.InfoInitializer") as mock_initializer_cls:
@@ -210,7 +286,7 @@ def test_main_info_command_failure(monkeypatch):
         assert exc_info.value.code == 1
 
 
-def test_main_keyboard_interrupt_exits_cleanly(monkeypatch, capsys):
+def test_main_keyboard_interrupt_exits_cleanly(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]):
     monkeypatch.setattr(sys, "argv", ["repopy", "init", "my-app"])
 
     def fake_interrupt():
