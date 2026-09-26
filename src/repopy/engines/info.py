@@ -12,7 +12,7 @@ from importlib.metadata import distributions
 from pathlib import Path
 from urllib.parse import urlparse
 
-from repopy.os_detector import is_windows
+from repopy.validators.os_detector import is_windows
 
 if sys.version_info >= (3, 11):
     import tomllib

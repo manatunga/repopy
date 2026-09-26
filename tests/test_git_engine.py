@@ -5,7 +5,7 @@ Automated test suite for repopy's git engine.
 import subprocess
 from pathlib import Path
 
-from repopy.git_engine import GitEngine, GitLinkEngine
+from repopy.engines.git_engine import GitEngine, GitLinkEngine
 
 
 def test_git_engine_path_derivation_default():

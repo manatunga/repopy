@@ -9,17 +9,17 @@ import json
 import logging
 from pathlib import Path
 
-from repopy.dependencies import has_git, has_python
-from repopy.file_system import FileSystemEngine
-from repopy.git_engine import GitEngine, GitLinkEngine
-from repopy.info import WorkspaceInfo
-from repopy.prompts import (
+from repopy.engines.file_system import FileSystemEngine
+from repopy.engines.git_engine import GitEngine, GitLinkEngine
+from repopy.engines.info import WorkspaceInfo
+from repopy.templates import format_info_output
+from repopy.ui.prompts import (
     confirm_cleanup,
     confirm_cleanup_artifacts,
     confirm_dependency_installation,
 )
-from repopy.templates import format_info_output
-from repopy.validators import is_valid_git_url, is_valid_project_name
+from repopy.validators.dependencies import has_git, has_python
+from repopy.validators.validators import is_valid_git_url, is_valid_project_name
 
 logger = logging.getLogger(__name__)
 

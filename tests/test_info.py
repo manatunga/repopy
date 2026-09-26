@@ -12,14 +12,14 @@ from pathlib import Path
 
 import pytest
 
-from repopy.info import WorkspaceInfo
+from repopy.engines.info import WorkspaceInfo
 
 
 def test_find_site_packages_unix(monkeypatch, tmp_path):
     sp_dir = tmp_path / "lib" / "python3.12" / "site-packages"
     sp_dir.mkdir(parents=True)
 
-    monkeypatch.setattr("repopy.info.is_windows", lambda: False)
+    monkeypatch.setattr("repopy.engines.info.is_windows", lambda: False)
     sp = WorkspaceInfo._find_site_packages(tmp_path)
 
     assert sp == sp_dir
@@ -29,20 +29,20 @@ def test_find_site_packages_windows(monkeypatch, tmp_path):
     sp_dir = tmp_path / "Lib" / "site-packages"
     sp_dir.mkdir(parents=True)
 
-    monkeypatch.setattr("repopy.info.is_windows", lambda: True)
+    monkeypatch.setattr("repopy.engines.info.is_windows", lambda: True)
     sp = WorkspaceInfo._find_site_packages(tmp_path)
 
     assert sp == sp_dir
 
 
 def test_find_site_packages_unix_no_sp(monkeypatch, tmp_path):
-    monkeypatch.setattr("repopy.info.is_windows", lambda: False)
+    monkeypatch.setattr("repopy.engines.info.is_windows", lambda: False)
     sp = WorkspaceInfo._find_site_packages(tmp_path)
     assert sp is None
 
 
 def test_find_site_packages_windows_no_sp(monkeypatch, tmp_path):
-    monkeypatch.setattr("repopy.info.is_windows", lambda: True)
+    monkeypatch.setattr("repopy.engines.info.is_windows", lambda: True)
     sp = WorkspaceInfo._find_site_packages(tmp_path)
     assert sp is None
 
@@ -58,7 +58,7 @@ def test_get_venv_info_active_venv(monkeypatch, tmp_path):
             self.version = version
 
     monkeypatch.setattr(
-        "repopy.info.distributions",
+        "repopy.engines.info.distributions",
         lambda path=None: [
             DummyDist("fastapi", "0.3.1"),
             DummyDist("click", "0.5.4"),
@@ -87,7 +87,7 @@ def test_get_venv_info_inactive_venv(monkeypatch, tmp_path):
             self.version = version
 
     monkeypatch.setattr(
-        "repopy.info.distributions",
+        "repopy.engines.info.distributions",
         lambda path=None: [DummyDist("fastapi", "0.3.1"), DummyDist("click", "0.5.4")],
     )
 
@@ -497,8 +497,8 @@ def test_tomli_import_fallback(monkeypatch):
     monkeypatch.setitem(sys.modules, "tomli", dummy_tomli)
     monkeypatch.setattr(sys, "version_info", (3, 10, 0, "final, 0"))
 
-    import repopy.info
+    import repopy.engines.info
 
-    importlib.reload(repopy.info)
+    importlib.reload(repopy.engines.info)
 
-    assert repopy.info.tomllib is dummy_tomli
+    assert repopy.engines.info.tomllib is dummy_tomli

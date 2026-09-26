@@ -6,7 +6,7 @@ import sys
 
 import pytest
 
-from repopy.cli import parse_arguments
+from repopy.ui.cli import parse_arguments
 
 
 def test_clone_defaults(monkeypatch):

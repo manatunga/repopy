@@ -4,7 +4,7 @@ Automated test suite for repopy templates and layouts.
 
 from pathlib import Path
 
-from repopy.info import WorkspaceInfo
+from repopy.engines.info import WorkspaceInfo
 from repopy.templates import (
     GITIGNORE_TEMPLATE,
     format_info_output,

@@ -5,8 +5,8 @@ the orchestrators together under a main function.
 
 import sys
 
-from repopy.cli import parse_arguments
 from repopy.commands import COMMANDS
+from repopy.ui.cli import parse_arguments
 
 
 def main() -> None:

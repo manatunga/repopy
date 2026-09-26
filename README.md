@@ -183,29 +183,36 @@ repopy/
 │   └── workflows/
 │       ├── ci.yml               # CI test runner pipeline
 │       └── publish.yml          # CD PyPI deployer pipeline
+│
 ├── src/
 │   └── repopy/
 │       ├── __init__.py          # Package initialization
 │       ├── __main__.py          # Application execution entry
-│       ├── cli.py               # CLI subparser configuration
 │       ├── commands/            # Command registry & individual command definitions
+│       │   ├── base.py          # Command ABC contract
 │       │   ├── __init__.py      # Command registry (COMMANDS dict)
-│       │   ├── base.py          # Command(ABC) — shared command contract
 │       │   ├── clean.py         # CleanCommand definition
 │       │   ├── clone.py         # CloneCommand definition
 │       │   ├── info.py          # InfoCommand definition
-│       │   ├── init.py          # InitCommand definition
+│       │   ├── init.py          # InitCommand definition (adjust if named differently)
 │       │   └── link.py          # LinkCommand definition
 │       │
-│       ├── dependencies.py      # Binary prerequisite verification
-│       ├── file_system.py       # Atomic workspace & venv operations
-│       ├── git_engine.py        # Subprocess Git execution engine
-│       ├── info.py              # Workspace metadata extraction engine
+│       ├── ui/                  # User-facing input/output layer
+│       │   ├── cli.py           # CLI subparser configuration
+│       │   └── prompts.py       # Dynamic terminal questionnaires
+│       │
+│       ├── engines/             # Low-level execution engines
+│       │   ├── file_system.py   # Atomic workspace & venv operations
+│       │   ├── git_engine.py    # Subprocess Git execution engine
+│       │   └── info.py          # Workspace metadata extraction engine
+│       │
+│       ├── validators/          # Input sanitation & environment checks
+│       │   ├── validators.py    # Path and schema validation
+│       │   ├── dependencies.py  # Binary prerequisite verification
+│       │   └── os_detector.py   # Cross-platform environment resolver
+│       │
 │       ├── orchestrators.py     # High-level pipeline management
-│       ├── os_detector.py       # Cross-platform environment resolver
-│       ├── prompts.py           # Dynamic terminal questionnaires
-│       ├── templates.py         # Output formatting & asset manifests
-│       └── validators.py        # Input sanitation & regex filters
+│       └── templates.py         # Output formatting & asset manifests
 │
 ├── tests/
 │   ├── __init__.py

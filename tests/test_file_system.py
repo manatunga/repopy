@@ -6,7 +6,7 @@ import subprocess
 import venv
 from pathlib import Path
 
-from repopy.file_system import FileSystemEngine
+from repopy.engines.file_system import FileSystemEngine
 
 # -------------------------------------------------------------------------------------
 # Existing Requirements Parsing Tests
@@ -114,7 +114,7 @@ def test_write_theme_configurations_minimal(tmp_path):
 def test_write_theme_configurations_pyproject_toml(monkeypatch, tmp_path):
     fs_engine = FileSystemEngine(tmp_path)
     monkeypatch.setattr(
-        "repopy.file_system.generate_pyproject_toml",
+        "repopy.engines.file_system.generate_pyproject_toml",
         lambda manifest: '[project]\nname = "test_pkg"\n',
     )
     manifest = {"project_name": "test_pkg"}
@@ -209,7 +209,7 @@ def test_install_dependencies_posix_success(monkeypatch, tmp_path):
     req_file = tmp_path / "requirements.txt"
     req_file.write_text("pytest\n")
 
-    monkeypatch.setattr("repopy.file_system.is_windows", lambda: False)
+    monkeypatch.setattr("repopy.engines.file_system.is_windows", lambda: False)
 
     executed_cmd = []
 
@@ -232,7 +232,7 @@ def test_install_dependencies_windows_success(monkeypatch, tmp_path):
     req_file = tmp_path / "requirements.txt"
     req_file.write_text("pytest\n")
 
-    monkeypatch.setattr("repopy.file_system.is_windows", lambda: True)
+    monkeypatch.setattr("repopy.engines.file_system.is_windows", lambda: True)
 
     executed_cmd = []
 
@@ -255,7 +255,7 @@ def test_install_dependencies_failure_exit_code(monkeypatch, tmp_path):
     req_file = tmp_path / "requirements.txt"
     req_file.write_text("pytest\n")
 
-    monkeypatch.setattr("repopy.file_system.is_windows", lambda: False)
+    monkeypatch.setattr("repopy.engines.file_system.is_windows", lambda: False)
     monkeypatch.setattr(
         subprocess,
         "run",
@@ -284,7 +284,7 @@ def test_install_dependencies_os_error(monkeypatch, tmp_path):
 
 
 def test_get_activation_guide_posix(monkeypatch, tmp_path):
-    monkeypatch.setattr("repopy.file_system.is_windows", lambda: False)
+    monkeypatch.setattr("repopy.engines.file_system.is_windows", lambda: False)
     fs_engine = FileSystemEngine(tmp_path)
     guide = fs_engine.get_activation_guide()
     assert "source .venv/bin/activate" in guide
@@ -292,7 +292,7 @@ def test_get_activation_guide_posix(monkeypatch, tmp_path):
 
 
 def test_get_activation_guide_windows(monkeypatch, tmp_path):
-    monkeypatch.setattr("repopy.file_system.is_windows", lambda: True)
+    monkeypatch.setattr("repopy.engines.file_system.is_windows", lambda: True)
     fs_engine = FileSystemEngine(tmp_path)
     guide = fs_engine.get_activation_guide()
     assert "Activate.ps1" in guide

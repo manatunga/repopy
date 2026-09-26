@@ -13,12 +13,12 @@ import subprocess
 import venv
 from pathlib import Path
 
-from repopy.os_detector import is_windows
 from repopy.templates import (
     GITIGNORE_TEMPLATE,
     generate_pyproject_toml,
     generate_readme,
 )
+from repopy.validators.os_detector import is_windows
 
 logger = logging.getLogger(__name__)
 

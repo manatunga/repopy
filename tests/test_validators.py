@@ -2,7 +2,7 @@
 Automated test suite for repopy validation layers.
 """
 
-from repopy.validators import is_valid_git_url, is_valid_project_name
+from repopy.validators.validators import is_valid_git_url, is_valid_project_name
 
 
 def test_project_name_validation(tmp_path, monkeypatch):

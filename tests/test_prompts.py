@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from repopy.prompts import (
+from repopy.ui.prompts import (
     capture_project_manifests,
     confirm_cleanup,
     confirm_cleanup_artifacts,

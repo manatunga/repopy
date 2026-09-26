@@ -4,7 +4,7 @@ Command: `repopy init`
 
 from repopy.commands.base import Command
 from repopy.orchestrators import LinkInitializer, LocalInitializer
-from repopy.prompts import capture_project_manifests
+from repopy.ui.prompts import capture_project_manifests
 
 
 class InitCommand(Command):

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "repopy"
-version = "0.6.0"
+version = "0.6.1"
 description = "A CLI tool for Python workspace scaffolding, remote upstream linking, artifact cleanup, and environment inspection."
 readme = "README.md"
 requires-python = ">=3.8"

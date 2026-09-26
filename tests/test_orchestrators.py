@@ -7,8 +7,8 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import repopy.orchestrators as orch
-from repopy.file_system import FileSystemEngine
-from repopy.git_engine import GitEngine, GitLinkEngine
+from repopy.engines.file_system import FileSystemEngine
+from repopy.engines.git_engine import GitEngine, GitLinkEngine
 from repopy.orchestrators import (
     CleanInitializer,
     CloneInitializer,
