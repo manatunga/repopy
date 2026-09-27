@@ -153,9 +153,7 @@ def test_main_init_with_link_skipped_on_failure(monkeypatch: pytest.MonkeyPatch)
 
 def test_main_clone_command_run_calls_initializer_correctly():
     args = MagicMock(
-        repo_url="https://github.com/user/repo.git",
-        install=False,
-        no_install=False
+        repo_url="https://github.com/user/repo.git", install=False, no_install=False
     )
     args.name = "my_project"
 
@@ -198,8 +196,7 @@ def test_main_clone_dispatch(monkeypatch: pytest.MonkeyPatch):
 
 def test_main_link_command_run_calls_initializer_correctly():
     args = MagicMock(
-        repo_url="https://github.com/user/repo.git",
-        message="First commit"
+        repo_url="https://github.com/user/repo.git", message="First commit"
     )
 
     with patch("repopy.commands.link.LinkInitializer") as mock_initializer_cls:
@@ -337,7 +334,9 @@ def test_main_info_command_failure(monkeypatch: pytest.MonkeyPatch):
         assert exc_info.value.code == 1
 
 
-def test_main_keyboard_interrupt_exits_cleanly(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]):
+def test_main_keyboard_interrupt_exits_cleanly(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+):
     monkeypatch.setattr(sys, "argv", ["repopy", "init", "my-app"])
 
     def fake_interrupt():
