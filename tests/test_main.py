@@ -8,9 +8,64 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from repopy.__main__ import main
+from repopy.commands import COMMANDS
 
 
-def test_main_init_dispatch(monkeypatch):
+def test_main_init_command_run_calls_initializer_correctly():
+    mock_manifest = {"project_name": "my_project", "theme": "minimal"}
+    args = MagicMock(link=None)
+
+    with patch(
+        "repopy.commands.init.capture_project_manifests",
+        return_value=mock_manifest,
+    ), patch("repopy.commands.init.LocalInitializer") as mock_local_cls, patch(
+        "repopy.commands.init.LinkInitializer"
+    ) as mock_link_cls:
+        mock_local_instance = MagicMock()
+        mock_local_instance.run.return_value = True
+        mock_local_cls.return_value = mock_local_instance
+
+        result = COMMANDS["init"].run(args)
+
+        mock_local_cls.assert_called_once_with(mock_manifest)
+        mock_local_instance.run.assert_called_once()
+        mock_link_cls.assert_not_called()
+
+        assert result is True
+
+
+def test_main_init_command_with_link_flag_run_calls_initializer_correctly():
+    mock_manifest = {"project_name": "my_project", "theme": "minimal"}
+    args = MagicMock(link="https://github.com/user/repo.git", message="First commit")
+
+    with patch(
+        "repopy.commands.init.capture_project_manifests",
+        return_value=mock_manifest,
+    ), patch("repopy.commands.init.LocalInitializer") as mock_local_cls, patch(
+        "repopy.commands.init.LinkInitializer"
+    ) as mock_link_cls:
+        mock_local_instance = MagicMock()
+        mock_local_instance.run.return_value = True
+        mock_local_cls.return_value = mock_local_instance
+
+        mock_link_instance = MagicMock()
+        mock_link_instance.run.return_value = True
+        mock_link_cls.return_value = mock_link_instance
+
+        result = COMMANDS["init"].run(args)
+
+        mock_local_cls.assert_called_once_with(mock_manifest)
+        mock_local_instance.run.assert_called_once()
+
+        mock_link_cls.assert_called_once_with(
+            "https://github.com/user/repo.git", "First commit"
+        )
+        mock_link_instance.run.assert_called_once()
+
+        assert result is True
+
+
+def test_main_init_dispatch(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(sys, "argv", ["repopy", "init", "my-app"])
 
     # Supply the expected 'project_name' key
@@ -94,6 +149,26 @@ def test_main_init_with_link_skipped_on_failure(monkeypatch):
         main()
 
     assert exc_info.value.code == 1
+
+
+def test_main_clone_command_run_calls_initializer_correctly():
+    args = MagicMock(
+        repo_url="https://github.com/user/repo.git", install=False, no_install=False
+    )
+    args.name = "my_project"
+
+    with patch("repopy.commands.clone.CloneInitializer") as mock_initializer_cls:
+        mock_instance = MagicMock()
+        mock_instance.run.return_value = True
+        mock_initializer_cls.return_value = mock_instance
+
+        result = COMMANDS["clone"].run(args)
+
+        mock_initializer_cls.assert_called_once_with(
+            "https://github.com/user/repo.git", "my_project", False, False
+        )
+        mock_instance.run.assert_called_once()
+        assert result is True
 
 
 def test_main_clone_dispatch(monkeypatch):

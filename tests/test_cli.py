@@ -110,9 +110,7 @@ def test_info_json_flag(monkeypatch):
 
 def test_link_defaults(monkeypatch):
     monkeypatch.setattr(
-        sys,
-        "argv",
-        ["repopy", "link", "https://github.com/user/repo.git"]
+        sys, "argv", ["repopy", "link", "https://github.com/user/repo.git"]
     )
     args = parse_arguments()
 
@@ -125,7 +123,7 @@ def test_link_m_flag(monkeypatch):
     monkeypatch.setattr(
         sys,
         "argv",
-        ["repopy", "link", "https://github.com/user/repo.git", "-m", "First commit"]
+        ["repopy", "link", "https://github.com/user/repo.git", "-m", "First commit"],
     )
     args = parse_arguments()
 
@@ -136,7 +134,13 @@ def test_link_message_flag(monkeypatch):
     monkeypatch.setattr(
         sys,
         "argv",
-        ["repopy", "link", "https://github.com/user/repo.git", "--message", "First commit"]
+        [
+            "repopy",
+            "link",
+            "https://github.com/user/repo.git",
+            "--message",
+            "First commit",
+        ],
     )
     args = parse_arguments()
 
@@ -205,7 +209,14 @@ def test_init_with_link_and_message_flags(monkeypatch):
     monkeypatch.setattr(
         sys,
         "argv",
-        ["repopy", "init", "-l", "https://github.com/user/repo.git", "-m", "First commit"]
+        [
+            "repopy",
+            "init",
+            "-l",
+            "https://github.com/user/repo.git",
+            "-m",
+            "First commit",
+        ],
     )
     args = parse_arguments()
 
